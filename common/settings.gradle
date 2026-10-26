@@ -1,0 +1,2 @@
+// Allows `gradlew -p common ...` to build the library without configuring Minecraft.
+rootProject.name = 'gt6ce-api'
