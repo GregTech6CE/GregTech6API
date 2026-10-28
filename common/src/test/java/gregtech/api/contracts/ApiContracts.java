@@ -16,6 +16,7 @@ public final class ApiContracts {
                 "API version must match the independently published artifact");
         checkJarClosure();
         checkEnergyContracts();
+        StructurePatternContracts.check();
         try {
             AddonRuntime.services();
             throw new AssertionError("Host queries must fail before the runtime is bound");

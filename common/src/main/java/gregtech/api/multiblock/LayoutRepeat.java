@@ -124,8 +124,8 @@ public final class LayoutRepeat {
         public LayoutRepeat build() {
             if (!AddonNames.matches(AddonNames.LOWER_PATH, key))
                 throw new IllegalArgumentException("Structure repeat key is invalid: " + key);
-            if (min < 1)
-                throw new IllegalArgumentException("Structure repeat '" + key + "' needs min >= 1");
+            if (min < 0 || max == 0)
+                throw new IllegalArgumentException("Structure repeat '" + key + "' needs min >= 0 and max > 0 or -1");
             if (max != -1 && max < min)
                 throw new IllegalArgumentException("Structure repeat '" + key + "' needs max >= min or -1");
             if (max > MAX_COPIES)

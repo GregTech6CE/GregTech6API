@@ -49,6 +49,9 @@ public final class StructureLayout {
 
     public static Builder builder(String name) { return new Builder(name); }
 
+    /** Character-layer authoring; produces the same immutable layout as the coordinate builder. */
+    public static StructurePattern pattern(String name) { return StructurePattern.builder(name); }
+
     public static final class Builder {
         private final String name;
         private final List<LayoutCell> cells = new ArrayList<>();
@@ -84,6 +87,8 @@ public final class StructureLayout {
                 throw new IllegalArgumentException("Layout '" + name + "' is empty");
             var seen = new HashSet<Position>();
             for (LayoutCell cell : cells) {
+                if (cell.right() == 0 && cell.up() == 0 && cell.back() == 0)
+                    throw new IllegalArgumentException("Structure cell cannot be the origin");
                 if (!seen.add(new Position(cell.right(), cell.up(), cell.back())))
                     throw new IllegalArgumentException("Duplicate structure cell at "
                             + cell.right() + "/" + cell.up() + "/" + cell.back());
