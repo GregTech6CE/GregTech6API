@@ -27,6 +27,7 @@ public final class ApiContracts {
         checkSharedValueContracts();
         checkMaterialContracts();
         checkMachineFaceMaskContracts();
+        checkModDataContracts();
         checkLocaleContracts();
         try {
             AddonRuntime.services();
@@ -130,6 +131,27 @@ public final class ApiContracts {
         reject(() -> MachineFaceMasks.builder().energyIn(-1));
         reject(() -> MachineFaceMasks.builder().itemAutoIn(6));
         reject(() -> MachineFaceMasks.builder().fluidAutoOut(-2));
+    }
+
+    private static void checkModDataContracts() throws InterruptedException {
+        ModData.bindPresence(id -> true);
+        int threads = 4;
+        int perThread = 250;
+        Thread[] workers = new Thread[threads];
+        for (int t = 0; t < threads; t++) {
+            int base = t * perThread;
+            workers[t] = new Thread(() -> {
+                for (int i = 0; i < perThread; i++) new ModData("mod" + (base + i), "Mod " + (base + i));
+            });
+        }
+        try {
+            for (Thread worker : workers) worker.start();
+            for (Thread worker : workers) worker.join();
+            check(ModData.MODS.size() == threads * perThread,
+                    "Concurrent mod construction must not lose entries");
+        } finally {
+            ModData.MODS.clear();
+        }
     }
 
     private static void checkLocaleContracts() {

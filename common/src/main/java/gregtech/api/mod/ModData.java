@@ -1,14 +1,15 @@
 package gregtech.api.mod;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Mod ownership metadata for materials and recipes, analogous to GregTech {@code ModData}.
  */
 public final class ModData {
-    public static final Map<String, ModData> MODS = new HashMap<>();
+    /** Concurrent: loader mod constructors may register in parallel. */
+    public static final Map<String, ModData> MODS = new ConcurrentHashMap<>();
     private static java.util.function.Predicate<String> presence;
 
     /** The platform must bind its loader query before any metadata or material holder initializes. */
