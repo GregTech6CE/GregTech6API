@@ -396,6 +396,7 @@ public final class BehaviorMachine implements AddonMachine {
         }
     }
 
+    @SuppressWarnings("removal")
     private static EnergyInput mainInput(String id, EnergyInput energy) {
         if (energy.perTick() < 1 || energy.perTick() > AddonLimits.MAX_PER_TICK)
             throw new IllegalArgumentException("Invalid energy per tick for " + id + ": " + energy.perTick());

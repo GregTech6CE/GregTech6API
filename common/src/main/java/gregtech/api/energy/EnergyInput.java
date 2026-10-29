@@ -2,6 +2,7 @@
 
 package gregtech.api.energy;
 
+import gregtech.api.addon.AddonApiRemoval;
 import gregtech.api.machine.MachineFace;
 
 import java.util.List;
@@ -102,7 +103,13 @@ public final class EnergyInput {
                 capacitySpecified, capacity, anyPacket, overload, dynamic);
     }
 
-    /** Zero capacity is the behavior-machine default, whether or not the builder named it. */
+    /**
+     * Zero capacity is the behavior-machine default, whether or not the builder named it.
+     *
+     * @deprecated Host-internal normalization step with no addon meaning and no replacement; removal is 0.4.
+     */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.energy.EnergyInput#collapseDefaultCapacity", removeAt = "0.4")
     public EnergyInput collapseDefaultCapacity() {
         if (capacity != 0) return this;
         return new EnergyInput(type, perTick, rangeSpecified, rangeMin, rangeMax,
