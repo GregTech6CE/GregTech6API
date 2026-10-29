@@ -40,7 +40,12 @@ public interface MachineBehaviorContext {
      * Legacy read: returns the live inventory stack. Mutating it directly does not guarantee
      * save/synchronization notifications; use {@link #setItem(int, ItemStack)} for writes.
      * Prefer {@link #inventoryAccess()} for snapshot reads and explicit inventory operations.
+     *
+     * @deprecated Use {@link InventoryAccess#snapshot(int)} from {@link #inventoryAccess()};
+     *             it returns a detached stack. Removal is 0.4.
      */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#item", removeAt = "0.4")
     ItemStack item(int slot);
 
     void setItem(int slot, ItemStack stack);
