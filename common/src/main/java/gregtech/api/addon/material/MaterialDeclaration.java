@@ -11,7 +11,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-/** Pure data for one addon material. GregTech turns it into a generated {@code gt6ce:} material at startup. */
+/**
+ * Pure data for one addon material. GregTech turns it into a generated {@code gt6ce:} material at startup.
+ *
+ * @param id numeric material id; declarations from {@link #builder(String)} use 0, meaning the host assigns the
+ *           real id at startup. Read it back with {@code GregTechMaterials.find(name).id()}.
+ */
 public record MaterialDeclaration(
         int id,
         String name,
@@ -68,7 +73,8 @@ public record MaterialDeclaration(
     public static Builder builder(String name) { return new Builder(0, name); }
 
     /**
-     * @deprecated Use {@link #builder(String)}. The numeric id is ignored. Removal is 0.9.
+     * @deprecated Use {@link #builder(String)}. The numeric id is ignored; the 1..9999 check remains only so
+     *             legacy declarations keep rejecting invalid ids. Removal is 0.9.
      */
     @Deprecated(since = "0.0", forRemoval = true)
     @AddonApiRemoval(id = "gregtech.api.addon.material.MaterialDeclaration#builder", removeAt = "0.9")

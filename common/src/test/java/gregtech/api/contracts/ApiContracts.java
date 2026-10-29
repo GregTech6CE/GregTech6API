@@ -4,6 +4,7 @@ import gregtech.api.addon.AddonRuntime;
 import gregtech.api.addon.GregTechAddons;
 import gregtech.api.energy.EnergyType;
 import gregtech.api.machine.BasicMachineParameters;
+import gregtech.api.machine.MachineFaceMasks;
 import gregtech.api.material.GTMaterial;
 import gregtech.api.material.MaterialTextureSet;
 import gregtech.api.mod.ModData;
@@ -20,6 +21,7 @@ public final class ApiContracts {
         checkJarClosure();
         checkEnergyContracts();
         checkMaterialContracts();
+        checkMachineFaceMaskContracts();
         checkLocaleContracts();
         try {
             AddonRuntime.services();
@@ -98,6 +100,21 @@ public final class ApiContracts {
                 "Ore processing multiplier must not overflow a byte");
     }
 
+    private static void checkMachineFaceMaskContracts() {
+        MachineFaceMasks masks = MachineFaceMasks.builder()
+                .itemIn(MachineFaceMasks.TOP).itemOut(MachineFaceMasks.BOTTOM)
+                .itemAutoIn(MachineFaceMasks.AUTO_NONE).build();
+        check(MachineFaceMasks.has(masks.itemInputs(), MachineFaceMasks.TOP), "Face bits must be stored");
+        check(masks.itemAutoInput() == MachineFaceMasks.AUTO_NONE, "Auto direction -1 must stay allowed");
+        for (int dir : new int[] {-1, 6, 32, Integer.MAX_VALUE}) {
+            reject(() -> MachineFaceMasks.builder().itemIn(dir));
+        }
+        reject(() -> MachineFaceMasks.builder().fluidOut(7));
+        reject(() -> MachineFaceMasks.builder().energyIn(-1));
+        reject(() -> MachineFaceMasks.builder().itemAutoIn(6));
+        reject(() -> MachineFaceMasks.builder().fluidAutoOut(-2));
+    }
+
     private static void checkLocaleContracts() {
         Locale previous = Locale.getDefault();
         Locale.setDefault(Locale.forLanguageTag("tr-TR"));
@@ -128,9 +145,9 @@ public final class ApiContracts {
     private static void reject(Runnable action) {
         try {
             action.run();
-            throw new AssertionError("Invalid energy or range was accepted");
+            throw new AssertionError("Invalid input was accepted");
         } catch (IllegalArgumentException expected) {
-            // These inputs must remain invalid after separating the content tag catalog.
+            // Expected.
         }
     }
 

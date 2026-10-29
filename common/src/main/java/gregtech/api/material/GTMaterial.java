@@ -329,7 +329,7 @@ public final class GTMaterial {
         return has(MaterialProperty.ELEMENT) && !hasComposition();
     }
 
-    /** Resolved tooltip chemical; uses composition tree when present. */
+    /** Tooltip chemical as declared; identical to {@link #getTooltipChemical()}. */
     public String getResolvedTooltipChemical() {
         return tooltipChemical;
     }

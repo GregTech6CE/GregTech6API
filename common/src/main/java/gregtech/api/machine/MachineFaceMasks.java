@@ -90,17 +90,31 @@ public record MachineFaceMasks(
 
         // ── Machine-relative int overloads (primary API) ──────────────
 
-        public Builder itemIn(int... dirs)    { for (int d : dirs) itemIn    |= (1 << d); return this; }
-        public Builder itemOut(int... dirs)   { for (int d : dirs) itemOut   |= (1 << d); return this; }
-        public Builder fluidIn(int... dirs)   { for (int d : dirs) fluidIn   |= (1 << d); return this; }
-        public Builder fluidOut(int... dirs)  { for (int d : dirs) fluidOut  |= (1 << d); return this; }
-        public Builder energyIn(int... dirs)  { for (int d : dirs) energyIn  |= (1 << d); return this; }
-        public Builder energyOut(int... dirs) { for (int d : dirs) energyOut |= (1 << d); return this; }
+        public Builder itemIn(int... dirs)    { itemIn    = faceMask(itemIn, dirs); return this; }
+        public Builder itemOut(int... dirs)   { itemOut   = faceMask(itemOut, dirs); return this; }
+        public Builder fluidIn(int... dirs)   { fluidIn   = faceMask(fluidIn, dirs); return this; }
+        public Builder fluidOut(int... dirs)  { fluidOut  = faceMask(fluidOut, dirs); return this; }
+        public Builder energyIn(int... dirs)  { energyIn  = faceMask(energyIn, dirs); return this; }
+        public Builder energyOut(int... dirs) { energyOut = faceMask(energyOut, dirs); return this; }
 
-        public Builder itemAutoIn(int d)    { itemAutoIn    = d; return this; }
-        public Builder itemAutoOut(int d)   { itemAutoOut   = d; return this; }
-        public Builder fluidAutoIn(int d)   { fluidAutoIn   = d; return this; }
-        public Builder fluidAutoOut(int d)  { fluidAutoOut  = d; return this; }
+        public Builder itemAutoIn(int d)    { itemAutoIn    = autoFace(d); return this; }
+        public Builder itemAutoOut(int d)   { itemAutoOut   = autoFace(d); return this; }
+        public Builder fluidAutoIn(int d)   { fluidAutoIn   = autoFace(d); return this; }
+        public Builder fluidAutoOut(int d)  { fluidAutoOut  = autoFace(d); return this; }
+
+        private static int faceMask(int current, int... dirs) {
+            for (int dir : dirs) {
+                if (dir < 0 || dir >= 6) throw new IllegalArgumentException("Machine face must be 0..5: " + dir);
+                current |= 1 << dir;
+            }
+            return current;
+        }
+
+        private static int autoFace(int dir) {
+            if (dir != AUTO_NONE && !autoValid(dir))
+                throw new IllegalArgumentException("Auto direction must be -1 or 0..5: " + dir);
+            return dir;
+        }
 
         public MachineFaceMasks build() {
             return new MachineFaceMasks(itemIn, itemOut, fluidIn, fluidOut,
