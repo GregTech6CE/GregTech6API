@@ -395,7 +395,6 @@ public final class BehaviorMachine implements AddonMachine {
         }
     }
 
-    @SuppressWarnings("removal")
     private static EnergyInput mainInput(String id, EnergyInput energy) {
         if (energy.perTick() < 1 || energy.perTick() > AddonLimits.MAX_PER_TICK)
             throw new IllegalArgumentException("Invalid energy per tick for " + id + ": " + energy.perTick());
@@ -410,7 +409,7 @@ public final class BehaviorMachine implements AddonMachine {
         var faces = energy.facesSpecified() ? energy.faces() : MachineFace.exceptFront();
         if (faces.isEmpty())
             throw new IllegalArgumentException("Behavior machine '" + id + "' accepts energy on no face");
-        return energy.withFaces(faces).collapseDefaultCapacity();
+        return energy.withFaces(faces);
     }
 
     private static EnergyInput auxiliaryInput(String id, EnergyInput auxiliary, EnergyInput main) {

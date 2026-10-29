@@ -2,7 +2,6 @@
 
 package gregtech.api.energy;
 
-import gregtech.api.addon.AddonApiRemoval;
 import gregtech.api.machine.MachineFace;
 
 import java.util.List;
@@ -97,23 +96,14 @@ public final class EnergyInput {
      */
     public boolean overload() { return overload; }
 
+    /**
+     * Returns a copy with {@code resolved} faces. A zero capacity is stored as unspecified,
+     * matching how a built machine treats it; duplicate or null faces are rejected.
+     */
     public EnergyInput withFaces(List<MachineFace> resolved) {
         return new EnergyInput(type, perTick, rangeSpecified, rangeMin, rangeMax,
                 facesSpecified, MachineFace.distinct(resolved, "energy face"),
-                capacitySpecified, capacity, anyPacket, overload, dynamic);
-    }
-
-    /**
-     * Zero capacity is the behavior-machine default, whether or not the builder named it.
-     *
-     * @deprecated Host-internal normalization step with no addon meaning and no replacement; removal is 0.5.
-     */
-    @Deprecated(since = "0.3", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.energy.EnergyInput#collapseDefaultCapacity", removeAt = "0.5")
-    public EnergyInput collapseDefaultCapacity() {
-        if (capacity != 0) return this;
-        return new EnergyInput(type, perTick, rangeSpecified, rangeMin, rangeMax,
-                facesSpecified, faces, false, 0, anyPacket, overload, dynamic);
+                capacitySpecified && capacity != 0, capacity, anyPacket, overload, dynamic);
     }
 
     @Override public boolean equals(Object other) {
