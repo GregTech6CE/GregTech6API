@@ -24,8 +24,8 @@ public final class AddonRecipes {
     private AddonRecipes() {}
 
     /** The named map. An unknown name throws {@link IllegalArgumentException}. */
-    public static Map map(String name) {
-        Map map = AddonLoader.services().map(name);
+    public static RecipeMap map(String name) {
+        RecipeMap map = AddonLoader.services().map(name);
         if (map == null) throw new IllegalArgumentException("Unknown recipe map: " + name);
         return map;
     }
@@ -40,7 +40,8 @@ public final class AddonRecipes {
         @Nullable Line find(List<ItemStack> items, List<FluidStack> fluids);
     }
 
-    public interface Map {
+    /** One machine recipe map. Named {@code RecipeMap} so it does not read as {@link java.util.Map}. */
+    public interface RecipeMap {
         String name();
 
         /** Adds a static row. Null means the map rejected it. */
@@ -79,6 +80,9 @@ public final class AddonRecipes {
      * empty slot from a row already stored. Array accessors return copies; changing a returned array or stack
      * does not change this row. A duration below one tick is stored as one, and a presence-only fluid input's
      * stored amount is rewritten to one; the presence gate only checks that the fluid is there.
+     * <p>
+     * New code should build rows through {@link #builder()}; the public constructors and {@code read}
+     * overloads exist for the host's own recipe readers.
      */
     @NullUnmarked
     public static final class Line {

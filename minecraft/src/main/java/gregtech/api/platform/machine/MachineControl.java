@@ -11,6 +11,14 @@ import org.jspecify.annotations.Nullable;
  * Optional machine controls. Relays resolve the target on every operation, never cache a machine.
  * This boundary currently exposes running/active state but has no explicit work-possible
  * or just-completed state; callers must not infer full original detector support from it.
+ * <p>
+ * Capability bits: {@link #available()} reports whether controls work at all this tick.
+ * {@link #supportsSwitch()} and {@link #supportsProgress()} default to true for machines that
+ * expose the matching state; an implementation without that state should override them to false.
+ * {@link #supportsWrite()} defaults to false, and every built-in machine keeps it false, so
+ * {@link #setProgress(long)} and {@link #setEnergy(long)} do nothing until an implementation opens
+ * writes and applies the value itself. {@link #supportsMode()} defaults to false. Callers must
+ * check the matching bit instead of inferring support from {@link #available()}.
  */
 public interface MachineControl {
     default boolean available() {

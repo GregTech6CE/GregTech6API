@@ -2,6 +2,8 @@
 
 package gregtech.api.addon.platform;
 
+import gregtech.api.addon.AddonApiRemoval;
+import gregtech.api.addon.recipe.CrucibleContent;
 import gregtech.api.addon.recipe.CrucibleMold;
 import gregtech.api.machine.MachineFace;
 import net.minecraft.core.Direction;
@@ -22,23 +24,32 @@ import net.minecraftforge.fluids.FluidStack;
 public interface MachineBehavior {
     void tick(MachineBehaviorContext context);
 
-    /** Items a player or a pipe may put in this slot. Output slots never call this. */
+    /**
+     * Items a player or a pipe may put in this slot. Output slots never call this.
+     * This is the machine-wide policy; implement it even when {@link #canInsert(MachineBehaviorContext,
+     * int, ItemStack, MachineFace)} is overridden for face-specific rules.
+     */
     boolean canInsert(MachineBehaviorContext context, int slot, ItemStack stack);
 
     /**
      * Same check, plus the face the pipe used. The default calls {@link #canInsert} without a face.
-     * A null face is the menu or an unsided handler.
+     * A null face is the menu or an unsided handler. Override this when a face changes the answer;
+     * the no-face method still has to return the machine-wide policy.
      */
     default boolean canInsert(MachineBehaviorContext context, int slot, ItemStack stack, MachineFace face) {
         return canInsert(context, slot, stack);
     }
 
-    /** Fluids this tank may hold. */
+    /**
+     * Fluids this tank may hold. This is the machine-wide policy; implement it even when
+     * {@link #canFill(MachineBehaviorContext, int, FluidStack, MachineFace)} is overridden.
+     */
     boolean canFill(MachineBehaviorContext context, int tank, FluidStack stack);
 
     /**
      * Same check, plus the face the pipe or container used. The default calls {@link #canFill} without a face.
-     * A null face is the menu or an unsided handler.
+     * A null face is the menu or an unsided handler. Override this when a face changes the answer;
+     * the no-face method still has to return the machine-wide policy.
      */
     default boolean canFill(MachineBehaviorContext context, int tank, FluidStack stack, MachineFace face) {
         return canFill(context, tank, stack);
@@ -64,22 +75,43 @@ public interface MachineBehavior {
     }
 
     /**
-     * Name of the molten material this behavior currently exposes, or an empty string when it
-     * holds none. A behavior that is not a crucible returns an empty string. Reading it removes
-     * nothing; the crucible's own storage is unchanged.
+     * The molten material this behavior currently exposes, or {@link CrucibleContent#EMPTY} when it
+     * holds none. Reading it removes nothing; the crucible's own storage is unchanged. The default
+     * combines the three deprecated getters.
      */
+    default CrucibleContent crucibleContent(MachineBehaviorContext context) {
+        return new CrucibleContent(getCrucibleMaterial(context), getCrucibleContentAmount(context),
+                getCrucibleTemperature(context));
+    }
+
+    /**
+     * Name of the molten material this behavior currently exposes, or an empty string when it
+     * holds none. A behavior that is not a crucible returns an empty string.
+     *
+     * @deprecated Override {@link #crucibleContent(MachineBehaviorContext)} instead. Removal is 0.5.
+     */
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehavior#getCrucibleMaterial", removeAt = "0.5")
     default String getCrucibleMaterial(MachineBehaviorContext context) { return ""; }
 
     /**
      * Current temperature of molten material held by this behavior, in Kelvin.
      * A behavior that is not a crucible returns zero.
+     *
+     * @deprecated Override {@link #crucibleContent(MachineBehaviorContext)} instead. Removal is 0.5.
      */
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehavior#getCrucibleTemperature", removeAt = "0.5")
     default long getCrucibleTemperature(MachineBehaviorContext context) { return 0; }
 
     /**
      * Total amount of molten material held by this behavior, in GT units.
      * A behavior that is not a crucible returns zero.
+     *
+     * @deprecated Override {@link #crucibleContent(MachineBehaviorContext)} instead. Removal is 0.5.
      */
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehavior#getCrucibleContentAmount", removeAt = "0.5")
     default long getCrucibleContentAmount(MachineBehaviorContext context) { return 0; }
 
     /**

@@ -37,7 +37,7 @@ public final class AddonLoader {
         FluidStack fluid(String name, AddonFluids.Kind kind, int millibuckets);
 
         /** Null when no machine recipe map uses {@code name}. */
-        AddonRecipes.@Nullable Map map(String name);
+        AddonRecipes.@Nullable RecipeMap map(String name);
 
         /** True when {@code fluid} is a gas. Empty and liquids are false. */
         boolean gas(Fluid fluid);

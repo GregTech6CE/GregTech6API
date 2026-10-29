@@ -58,6 +58,8 @@ API 版本仍以 `common/build.gradle` 为准。0.3 包含公开签名删除，�
 - 公共 API 使用 JSpecify（`org.jspecify:jspecify`）标注可空性：包级 `@NullMarked`，可空返回值与参数用 `@Nullable`。该依赖仅编译期使用，不进入运行时 classpath。
 - `GTVoltageTiers.VOLTAGES`/`NAMES` 和 `MaterialTextureSet.MODELED` 已移除，改用 `tierCount()`、`tierVoltage(int)`、`tierName(int)` 与 `modeled()`。
 - `MachineControl` 移至 `gregtech.api.platform.machine`，旧位置 `gregtech.api.machine.MachineControl` 已移除；宿主和附属改用新包的 `MachineControl` 与 `MachineControl.Provider`。
+- `AddonRecipes.Map` 改名为 `AddonRecipes.RecipeMap`，避免与 `java.util.Map` 混淆；`AddonLoader.Services.map` 的返回类型同步变更。
+- `MachineBehavior` 新增 `crucibleContent(context)`，返回 `CrucibleContent`；旧的 `getCrucibleMaterial`/`getCrucibleTemperature`/`getCrucibleContentAmount` 已废弃，计划 0.5 删除。
 - `RecipeMachine` 的上限与 `BehaviorMachine` 对齐：`tier` 不超过 255，主输入 `perTick` 必须在 1..`AddonLimits.MAX_PER_TICK`，并且落在声明的包范围（range）内。原本靠 0 或超大值通过的声明现在会报错。id 不是合法 machine type 时，报错会提示显式调用 `machineType(...)`。
 
 按 `@AddonApiRemoval` 排期的其余废弃项（0.9、0.10）删除之前，需要确认宿主与已知附属已经迁移并重新编译。
