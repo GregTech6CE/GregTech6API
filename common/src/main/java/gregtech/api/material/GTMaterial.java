@@ -173,6 +173,7 @@ public final class GTMaterial {
     /** Ordinary material recycling, distinct from ore crushing (GT6 mTargetPulver). */
     public GTMaterial getTargetPulverMaterial() { return targetPulverMaterial; }
     public long getTargetPulverAmount() { return targetPulverAmount; }
+    /** Null material means this; a negative amount is stored as zero. */
     public GTMaterial setPulver(GTMaterial material, long amount) {
         targetPulverMaterial = material == null ? this : material.resolve();
         targetPulverAmount = Math.max(0, amount);
@@ -305,6 +306,11 @@ public final class GTMaterial {
         return id > 0;
     }
 
+    /**
+     * Replaces the composition. Components with a null or invalid material are dropped, so the
+     * sentinel a {@code MaterialComponent(null, ...)} stores never reaches this list. A divider
+     * of zero or less is computed from the total amount and is at least one.
+     */
     public GTMaterial setComposition(long divider, MaterialComponent... components) {
         compositionComponents.clear();
         if (components != null) {
@@ -352,13 +358,13 @@ public final class GTMaterial {
                 Math.max(1L, this.toolDurability), Math.max(0, Math.min(15, toolQuality)));
     }
 
-    /** GT6 {@code setFurnaceBurnTime}. */
+    /** GT6 {@code setFurnaceBurnTime}; a negative value is stored as zero. */
     public GTMaterial setFurnaceBurnTime(long burnTime) {
         this.furnaceBurnTime = Math.max(0L, burnTime);
         return this;
     }
 
-    /** GT6 {@code setBurning}; ash left after burning one item-worth of this material. */
+    /** GT6 {@code setBurning}; ash left after burning one item-worth of this material. A negative amount is zero. */
     public GTMaterial setBurning(GTMaterial material, long amount) {
         this.targetBurningMaterial = material == null ? null : material.resolve();
         this.targetBurningAmount = Math.max(0L, amount);
@@ -381,14 +387,20 @@ public final class GTMaterial {
         }
     }
 
-    /** GT6 {@code setCrushing}; result of crushing this. Amount 0 disables; null material means this. */
+    /**
+     * GT6 {@code setCrushing}; result of crushing this. Amount 0 disables; null material means this.
+     * A negative amount is stored as zero.
+     */
     public GTMaterial setCrushing(GTMaterial material, long amount) {
         this.targetCrushingMaterial = material == null ? this : material.resolve();
         this.targetCrushingAmount = Math.max(0L, amount);
         return this;
     }
 
-    /** GT6 {@code setSmelting}; result of smelting this. Amount 0 disables; null material means this. */
+    /**
+     * GT6 {@code setSmelting}; result of smelting this. Amount 0 disables; null material means this.
+     * A negative amount is stored as zero.
+     */
     public GTMaterial setSmelting(GTMaterial material, long amount) {
         this.targetSmeltingMaterial = material == null ? this : material.resolve();
         this.targetSmeltingAmount = Math.max(0L, amount);

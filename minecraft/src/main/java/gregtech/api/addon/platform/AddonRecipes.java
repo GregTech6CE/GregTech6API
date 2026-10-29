@@ -74,7 +74,8 @@ public final class AddonRecipes {
      * <p>
      * Every constructor checks that each input amount is positive. {@link #read} is the only path that keeps an
      * empty slot from a row already stored. Array accessors return copies; changing a returned array or stack
-     * does not change this row.
+     * does not change this row. A duration below one tick is stored as one, and a presence-only fluid input's
+     * stored amount is rewritten to one; the presence gate only checks that the fluid is there.
      */
     public static final class Line {
         private final ItemStack[] itemInputs;
