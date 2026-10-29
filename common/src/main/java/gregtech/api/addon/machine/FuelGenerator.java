@@ -16,6 +16,8 @@ import java.util.Objects;
 /**
  * One addon fuel generator. It has no tier. Output is a {@link FuelOutput}, not an
  * {@link EnergyOutput}. A single block is the default. Tank capacity defaults to 4000.
+ * The machine type is the id unchanged; call {@code machineType(...)} when the id is not a valid
+ * machine type (for example it contains a slash).
  */
 public final class FuelGenerator implements AddonMachine {
     /** Furthest fixed output, matching the room past a gas turbine's rear wall. */
@@ -101,7 +103,9 @@ public final class FuelGenerator implements AddonMachine {
             String id = casing.id();
             String machineType = casing.machineType() == null ? id : casing.machineType();
             if (!AddonNames.matches(AddonNames.MACHINE_TYPE, machineType))
-                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType);
+                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType
+                        + (casing.machineType() == null
+                                ? "; call machineType(...) when the id is not a valid machine type" : ""));
             if (!AddonNames.matches(AddonNames.RECIPE_MAP, fuelMap))
                 throw new IllegalArgumentException("Invalid fuel map name: " + fuelMap);
             if (output == null) throw new IllegalArgumentException("Missing fuel output for " + id);

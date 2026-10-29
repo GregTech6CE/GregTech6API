@@ -1,7 +1,9 @@
 package gregtech.api.contracts;
 
+import gregtech.api.addon.AddonLimits;
 import gregtech.api.addon.AddonRuntime;
 import gregtech.api.addon.GregTechAddons;
+import gregtech.api.addon.recipe.RecipeMachine;
 import gregtech.api.energy.EnergyInput;
 import gregtech.api.energy.EnergyType;
 import gregtech.api.machine.BasicMachineParameters;
@@ -25,6 +27,7 @@ public final class ApiContracts {
         checkJarClosure();
         checkEnergyContracts();
         checkSharedValueContracts();
+        checkMachineTemplateContracts();
         checkMaterialContracts();
         checkMachineFaceMaskContracts();
         checkModDataContracts();
@@ -103,6 +106,43 @@ public final class ApiContracts {
         check(casing.resolve("addon_machine", true, 1).machineType().equals("addon_machine"),
                 "Resolved machine type must be kept");
         reject(() -> casing.resolve("Bad Type!", true, -5));
+    }
+
+    private static void checkMachineTemplateContracts() {
+        MachineCasing plain = MachineCasing.builder("addon_recipe", "iron").build();
+        RecipeMachine valid = RecipeMachine.builder(plain)
+                .energy(EnergyInput.builder("EU", 32).build())
+                .recipeMap("test_map")
+                .build();
+        check(valid.casing().machineType().equals("addon_recipe"), "Recipe machine keeps the id as machine type");
+
+        MachineCasing tiered = MachineCasing.builder("addon_tiered", "iron").tier(256).build();
+        reject(() -> RecipeMachine.builder(tiered)
+                .energy(EnergyInput.builder("EU", 32).build())
+                .recipeMap("test_map")
+                .build());
+        reject(() -> RecipeMachine.builder(plain)
+                .energy(EnergyInput.builder("EU", 0).build())
+                .recipeMap("test_map")
+                .build());
+        reject(() -> RecipeMachine.builder(plain)
+                .energy(EnergyInput.builder("EU", AddonLimits.MAX_PER_TICK + 1).build())
+                .recipeMap("test_map")
+                .build());
+        reject(() -> RecipeMachine.builder(plain)
+                .energy(EnergyInput.builder("EU", 32).range(64, 128).build())
+                .recipeMap("test_map")
+                .build());
+
+        try {
+            RecipeMachine.builder(MachineCasing.builder("addon/slash", "iron").build())
+                    .energy(EnergyInput.builder("EU", 32).build())
+                    .recipeMap("test_map")
+                    .build();
+            throw new AssertionError("A slash id must fail without an explicit machine type");
+        } catch (IllegalArgumentException expected) {
+            check(expected.getMessage().contains("machineType("), "Slash ids should point at machineType(...)");
+        }
     }
 
     private static void checkMaterialContracts() {

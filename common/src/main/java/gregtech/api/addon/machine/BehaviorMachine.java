@@ -19,7 +19,8 @@ import java.util.regex.Pattern;
 
 /**
  * One addon behavior machine. GregTech builds the block, inventory, tanks, menu and screen.
- * The machine type replaces {@code /} in the id with {@code _}. Tier is 1 to 255.
+ * The machine type replaces {@code /} in the id with {@code _}; call {@code machineType(...)} to
+ * override it. Tier is 1 to 255.
  * Energy input defaults to every face except the front. Capacity 0 keeps the rated-input drain.
  * The main input may declare a packet range or {@code anyPacket()}, and it may turn overload off.
  * It may be omitted when the machine emits. {@code auxiliaryEnergy} is a second buffer the
@@ -295,7 +296,9 @@ public final class BehaviorMachine implements AddonMachine {
             String id = casing.id();
             String machineType = casing.machineType() == null ? id.replace('/', '_') : casing.machineType();
             if (!AddonNames.matches(AddonNames.MACHINE_TYPE, machineType))
-                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType);
+                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType
+                        + (casing.machineType() == null
+                                ? "; call machineType(...) when the id is not a valid machine type" : ""));
             int tier = casing.tierSpecified() ? casing.tier() : 1;
             if (tier < 1 || tier > 255)
                 throw new IllegalArgumentException("Invalid tier for " + id + ": " + tier);

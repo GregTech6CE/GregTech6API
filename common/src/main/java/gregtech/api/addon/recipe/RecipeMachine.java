@@ -21,7 +21,8 @@ import java.util.Objects;
 /**
  * One addon recipe machine. Defaults: basic kind, parallel 1,
  * efficiency 10000, constant energy on, cheap overclock unset and off, no light gate.
- * The machine type is the id unchanged. A slash in that id is still invalid.
+ * The machine type is the id unchanged; call {@code machineType(...)} when the id is not a valid
+ * machine type (for example it contains a slash).
  */
 public final class RecipeMachine implements AddonMachine {
     private final MachineCasing casing;
@@ -174,9 +175,11 @@ public final class RecipeMachine implements AddonMachine {
             String id = casing.id();
             String machineType = casing.machineType() == null ? id : casing.machineType();
             if (!AddonNames.matches(AddonNames.MACHINE_TYPE, machineType))
-                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType);
+                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType
+                        + (casing.machineType() == null
+                                ? "; call machineType(...) when the id is not a valid machine type" : ""));
             int tier = casing.tierSpecified() ? casing.tier() : 1;
-            if (tier < 1)
+            if (tier < 1 || tier > 255)
                 throw new IllegalArgumentException("Invalid tier for " + id + ": " + tier);
             if (energy == null) throw new IllegalArgumentException("Missing energy type for " + id);
             if (energy.dynamic())
@@ -187,8 +190,12 @@ public final class RecipeMachine implements AddonMachine {
                 throw new IllegalArgumentException("Recipe machine '" + id + "' cannot ignore packet size");
             if (!energy.overload())
                 throw new IllegalArgumentException("Recipe machine '" + id + "' cannot disable overload");
-            if (energy.perTick() < 0)
+            if (energy.perTick() < 1 || energy.perTick() > AddonLimits.MAX_PER_TICK)
                 throw new IllegalArgumentException("Invalid energy per tick for " + id + ": " + energy.perTick());
+            if (energy.rangeSpecified()
+                    && (energy.perTick() < energy.rangeMin() || energy.perTick() > energy.rangeMax()))
+                throw new IllegalArgumentException("Recipe machine '" + id
+                        + "' energy per tick must sit inside the packet range");
             if (energy.rangeSpecified() && EnergyType.time(energy.type()))
                 throw new IllegalArgumentException("TU machines cannot declare an energy range: " + id);
             if (auxiliary != null) {

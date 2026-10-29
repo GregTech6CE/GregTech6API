@@ -54,6 +54,7 @@ API 版本仍以 `common/build.gradle` 为准。0.3 包含公开签名删除，�
 - `AddonLimits` 的 `MAX_PER_TICK`、`MAX_CAPACITY`、`MAX_EFFICIENCY`、`DEFAULT_EFFICIENCY` 不再是编译期常量：数值不变，但不能再用于 `switch` 的 case 标签、注解参数或其他常量表达式。重新编译后会在运行时读取宿主提供的当前值。
 - `MachineBehaviorContext` 新增自解释方法，旧重载与别名已废弃，计划 0.5 删除：`emit(long, long)` → `emitPacketsFromFaces`，`emit(String, long, long)`/`emitToPart` → `moveUnitsToPart`，`capacity()` → `energyCapacity`，`capacity(int)` → `tankCapacity`，`energy()` → `mainInputStored`，`energy(String)`/`auxiliaryEnergy` → `auxiliaryStored`，`progress(float)` → `setProgress`，`item(int)` → `inventoryAccess().snapshot(int)`。
 - `EnergyInput.collapseDefaultCapacity()` 是宿主内部步骤，已废弃，计划 0.5 删除。
+- `RecipeMachine` 的上限与 `BehaviorMachine` 对齐：`tier` 不超过 255，主输入 `perTick` 必须在 1..`AddonLimits.MAX_PER_TICK`，并且落在声明的包范围（range）内。原本靠 0 或超大值通过的声明现在会报错。id 不是合法 machine type 时，报错会提示显式调用 `machineType(...)`。
 
 0.5 删除废弃项之前，需要确认宿主与已知附属已经迁移并重新编译。
 
