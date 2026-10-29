@@ -43,6 +43,7 @@ API 版本独立于主模组版本，以 `common/build.gradle` 为准，`GregTec
 - `BasicMachineParameters.energyTag()` 移除，改用 `energyType()`；Tag 转换留在宿主。
 - `MachineControllerKind.builtIn(String)` 移出 API，附属应显式选择枚举值。
 - 基础机器仍只接受已知能源，使用 `EnergyType.requireKnown`；原本支持自定义类型与 `*` 的行为声明保持不变。TU/HU 与显式/未声明能源范围保持原规则。
+- `AddonLimits` 的 `MAX_PER_TICK`、`MAX_CAPACITY`、`MAX_EFFICIENCY`、`DEFAULT_EFFICIENCY` 不再是编译期常量：数值不变，但不能再用于 `switch` 的 case 标签、注解参数或其他常量表达式。重新编译后会在运行时读取宿主提供的当前值。
 
 这些入口的旧二进制需要迁移后重新编译。包名、注册 ID、SPI 服务路径和配方单位不因拆仓改变。可变模型和内部辅助类不自动承诺长期兼容。
 
