@@ -1,5 +1,6 @@
 package gregtech.api.material;
 
+import gregtech.api.addon.AddonApiRemoval;
 import gregtech.api.material.AtomicProperties;
 import gregtech.api.material.GTMaterial;
 import gregtech.api.material.MaterialProperty;
@@ -9,7 +10,14 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
-/** Named material registration parameters. GT6 import factories remain available separately. */
+/**
+ * Named material registration parameters. GT6 import factories remain available separately.
+ *
+ * @deprecated Use {@link gregtech.api.addon.material.MaterialDeclaration} for declarations and
+ *             {@link gregtech.api.addon.material.GregTechMaterials.Material} for reads. Removal is 0.10.
+ */
+@Deprecated(since = "0.3", forRemoval = true)
+@AddonApiRemoval(id = "gregtech.api.material.MaterialDefinition", removeAt = "0.10")
 public record MaterialDefinition(int id, String name, String displayName, int color,
                                  MaterialTextureSet texture, int meltingPointKelvin,
                                  int boilingPointKelvin, float density, String chemicalFormula,

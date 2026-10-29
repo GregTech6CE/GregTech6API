@@ -13,6 +13,8 @@ import java.util.Objects;
 
 /**
  * Pure data for one addon material. GregTech turns it into a generated {@code gt6ce:} material at startup.
+ * This is the recommended declaration entry for addons; generated materials are read through
+ * {@link GregTechMaterials}.
  *
  * @param id numeric material id; declarations from {@link #builder(String)} use 0, meaning the host assigns the
  *           real id at startup. Read it back with {@code GregTechMaterials.find(name).id()}.

@@ -10,7 +10,11 @@ import gregtech.api.energy.EnergyType;
 import java.util.List;
 import java.util.Objects;
 
-/** Defines one basic machine variant (GT6 {@code MultiTileEntityBasicMachine}). */
+/**
+ * Defines one basic machine variant (GT6 {@code MultiTileEntityBasicMachine}).
+ * Host-side machine parameter model; addons declare machines through
+ * {@link gregtech.api.addon.machine.BehaviorMachine} or {@link gregtech.api.addon.recipe.RecipeMachine}.
+ */
 public record BasicMachineParameters(
         String id,
         GTMaterial material,

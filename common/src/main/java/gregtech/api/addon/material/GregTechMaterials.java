@@ -10,7 +10,11 @@ import gregtech.api.addon.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Read-only material handles. The material table itself stays inside GregTech. */
+/**
+ * Read-only material handles. The material table itself stays inside GregTech.
+ * This is the recommended read entry for addons; materials are declared through
+ * {@link MaterialDeclaration}.
+ */
 public final class GregTechMaterials {
     private GregTechMaterials() {}
 

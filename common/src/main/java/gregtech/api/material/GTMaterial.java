@@ -14,6 +14,10 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Core material definition, analogous to GregTech {@code OreDictMaterial}.
+ * <p>
+ * Host-side mutable runtime model. Addons declare materials through
+ * {@link gregtech.api.addon.material.MaterialDeclaration} and read them through
+ * {@link gregtech.api.addon.material.GregTechMaterials.Material}.
  */
 public final class GTMaterial {
     public static final int INVALID_ID = -1;
