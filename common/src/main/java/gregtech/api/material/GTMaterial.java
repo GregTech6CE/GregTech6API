@@ -406,9 +406,15 @@ public final class GTMaterial {
         return this;
     }
 
-    /** GT6 {@code setOreMultiplier}; crushed-ore output multiplier, clamped to at least 1. */
+    /** GT6 {@code setOreMultiplier}; crushed-ore output multiplier, clamped to 1..127. */
     public GTMaterial setOreMultiplier(int multiplier) {
-        this.oreMultiplier = (byte) Math.max(1, multiplier);
+        this.oreMultiplier = (byte) Math.min(Byte.MAX_VALUE, Math.max(1, multiplier));
+        return this;
+    }
+
+    /** GT6 {@code setOreProcessingMultiplier}; ore-processing output multiplier, clamped to 1..127. */
+    public GTMaterial setOreProcessingMultiplier(int multiplier) {
+        this.oreProcessingMultiplier = (byte) Math.min(Byte.MAX_VALUE, Math.max(1, multiplier));
         return this;
     }
 

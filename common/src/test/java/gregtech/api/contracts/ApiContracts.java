@@ -19,6 +19,7 @@ public final class ApiContracts {
                 "API version must match the independently published artifact");
         checkJarClosure();
         checkEnergyContracts();
+        checkMaterialContracts();
         checkLocaleContracts();
         try {
             AddonRuntime.services();
@@ -82,6 +83,19 @@ public final class ApiContracts {
         range(omitted, false, 16, 64);
         range(omitted, true, 1, 4096);
         reject(() -> machine("EU", 32).energyRange(10, 5).build());
+    }
+
+    private static void checkMaterialContracts() {
+        GTMaterial material = new GTMaterial(1, "Test", "Test", 0xFFFFFF);
+        check(material.setOreMultiplier(0).getOreMultiplier() == 1, "Ore multiplier must stay at least 1");
+        for (int multiplier : new int[] {200, 256, Integer.MAX_VALUE}) {
+            check(material.setOreMultiplier(multiplier).getOreMultiplier() == Byte.MAX_VALUE,
+                    "Ore multiplier must not overflow a byte: " + multiplier);
+        }
+        check(material.setOreProcessingMultiplier(0).getOreProcessingMultiplier() == 1,
+                "Ore processing multiplier must stay at least 1");
+        check(material.setOreProcessingMultiplier(300).getOreProcessingMultiplier() == Byte.MAX_VALUE,
+                "Ore processing multiplier must not overflow a byte");
     }
 
     private static void checkLocaleContracts() {
