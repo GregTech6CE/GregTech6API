@@ -98,7 +98,8 @@ public final class EnergyInput {
 
     public EnergyInput withFaces(List<MachineFace> resolved) {
         return new EnergyInput(type, perTick, rangeSpecified, rangeMin, rangeMax,
-                facesSpecified, List.copyOf(resolved), capacitySpecified, capacity, anyPacket, overload, dynamic);
+                facesSpecified, MachineFace.distinct(resolved, "energy face"),
+                capacitySpecified, capacity, anyPacket, overload, dynamic);
     }
 
     /** Zero capacity is the behavior-machine default, whether or not the builder named it. */

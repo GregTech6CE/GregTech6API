@@ -2,14 +2,18 @@ package gregtech.api.contracts;
 
 import gregtech.api.addon.AddonRuntime;
 import gregtech.api.addon.GregTechAddons;
+import gregtech.api.energy.EnergyInput;
 import gregtech.api.energy.EnergyType;
 import gregtech.api.machine.BasicMachineParameters;
+import gregtech.api.machine.MachineCasing;
+import gregtech.api.machine.MachineFace;
 import gregtech.api.machine.MachineFaceMasks;
 import gregtech.api.material.GTMaterial;
 import gregtech.api.material.MaterialTextureSet;
 import gregtech.api.mod.ModData;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.jar.JarFile;
 
@@ -20,6 +24,7 @@ public final class ApiContracts {
                 "API version must match the independently published artifact");
         checkJarClosure();
         checkEnergyContracts();
+        checkSharedValueContracts();
         checkMaterialContracts();
         checkMachineFaceMaskContracts();
         checkLocaleContracts();
@@ -85,6 +90,18 @@ public final class ApiContracts {
         range(omitted, false, 16, 64);
         range(omitted, true, 1, 4096);
         reject(() -> machine("EU", 32).energyRange(10, 5).build());
+    }
+
+    private static void checkSharedValueContracts() {
+        EnergyInput input = EnergyInput.builder("EU", 32).build();
+        check(input.withFaces(List.of(MachineFace.FRONT, MachineFace.TOP)).faces().size() == 2,
+                "Resolved faces must be kept");
+        reject(() -> input.withFaces(List.of(MachineFace.FRONT, MachineFace.FRONT)));
+
+        MachineCasing casing = MachineCasing.builder("addon/casing", "iron").build();
+        check(casing.resolve("addon_machine", true, 1).machineType().equals("addon_machine"),
+                "Resolved machine type must be kept");
+        reject(() -> casing.resolve("Bad Type!", true, -5));
     }
 
     private static void checkMaterialContracts() {

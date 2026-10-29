@@ -37,7 +37,13 @@ public final class MachineCasing {
     public int tier() { return tier; }
 
     public MachineCasing resolve(String machineType, boolean tierSpecified, int tier) {
+        requireMachineType(id, machineType);
         return new MachineCasing(id, material, machineType, tierSpecified, tier);
+    }
+
+    private static void requireMachineType(String id, String machineType) {
+        if (machineType != null && !AddonNames.matches(AddonNames.MACHINE_TYPE, machineType))
+            throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType);
     }
 
     @Override public boolean equals(Object other) {
@@ -80,8 +86,7 @@ public final class MachineCasing {
                 throw new IllegalArgumentException("Invalid machine ID: " + id);
             if (material == null || material.isBlank())
                 throw new IllegalArgumentException("Missing casing material for " + id);
-            if (machineType != null && !AddonNames.matches(AddonNames.MACHINE_TYPE, machineType))
-                throw new IllegalArgumentException("Invalid machine type for " + id + ": " + machineType);
+            requireMachineType(id, machineType);
             return new MachineCasing(id, material, machineType, tierSpecified, tier);
         }
     }
