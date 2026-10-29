@@ -2,6 +2,7 @@
 
 package gregtech.api.addon.platform;
 
+import gregtech.api.addon.AddonApiRemoval;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,7 @@ public interface MachineBehaviorContext {
 
     /** Unified snapshot reads and mB operations for this machine's tanks. */
     default FluidAccess fluidAccess() {
-        return BehaviorAccess.fluids(this::tanks, this::fluid, this::capacity, this::fill, this::drain);
+        return BehaviorAccess.fluids(this::tanks, this::fluid, this::tankCapacity, this::fill, this::drain);
     }
 
     Level level();
@@ -51,10 +52,16 @@ public interface MachineBehaviorContext {
 
     FluidStack fluid(int tank);
 
-    /** Capacity of tank {@code tank} in millibuckets. Prefer {@link #tankCapacity(int)} at call sites. */
+    /**
+     * Capacity of tank {@code tank} in millibuckets.
+     *
+     * @deprecated Use {@link #tankCapacity(int)}. Removal is 0.4.
+     */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#capacity", removeAt = "0.4")
     int capacity(int tank);
 
-    /** Same as {@link #capacity(int)}. */
+    /** Capacity of tank {@code tank} in millibuckets. */
     default int tankCapacity(int tank) { return capacity(tank); }
 
     /**
@@ -71,12 +78,20 @@ public interface MachineBehaviorContext {
 
     /**
      * Energy stored in the main input, in the machine's energy unit.
-     * A machine that declares no main input returns 0. {@link #generate} and {@link #emit} still move energy.
-     * The auxiliary buffer is {@link #energy(String)} / {@link #auxiliaryEnergy(String)}.
+     * A machine that declares no main input returns 0. {@link #generate} and
+     * {@link #emitPacketsFromFaces(long, long)} still move energy. The auxiliary buffer is
+     * {@link #auxiliaryStored(String)}.
+     *
+     * @deprecated Use {@link #mainInputStored()}. Removal is 0.4.
      */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#energy", removeAt = "0.4")
     long energy();
 
-    /** Removes {@code amount} from {@link #energy()}. Returns false when there is less than that, or when there is no main input. */
+    /** Energy stored in the main input, in the machine's energy unit; same as {@link #energy()}. */
+    default long mainInputStored() { return energy(); }
+
+    /** Removes {@code amount} from {@link #mainInputStored()}. Returns false when there is less than that, or when there is no main input. */
     boolean consume(long amount);
 
     /**
@@ -87,10 +102,19 @@ public interface MachineBehaviorContext {
      */
     long generate(long amount);
 
-    /** Stored-energy cap. Zero means the machine still drains its rated input each tick. */
+    /**
+     * Stored-energy cap. Zero means the machine still drains its rated input each tick.
+     *
+     * @deprecated Use {@link #energyCapacity()}. Removal is 0.4.
+     */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#capacity", removeAt = "0.4")
     long capacity();
 
-    /** Changes {@link #capacity()} for later ticks and for the cap at the end of this tick. */
+    /** Stored-energy cap. Zero means the machine still drains its rated input each tick. */
+    default long energyCapacity() { return capacity(); }
+
+    /** Changes {@link #energyCapacity()} for later ticks and for the cap at the end of this tick. */
     void setCapacity(long capacity);
 
     /**
@@ -98,9 +122,19 @@ public interface MachineBehaviorContext {
      * Spends {@code abs(size)} energy units for each packet a neighbor accepts.
      * Returns the number of accepted packets, not remaining packets or energy units.
      * A request above the declared maximum throws. Prefer {@link #energyAccess()} for a typed result.
-     * A named bound part is {@link #emit(String, long, long)} / {@link #emitToPart(String, long, long)}.
+     * A named bound part is {@link #moveUnitsToPart(String, long, long)}.
+     *
+     * @deprecated Use {@link #emitPacketsFromFaces(long, long)}. Removal is 0.4.
      */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emit", removeAt = "0.4")
     long emit(long size, long amount);
+
+    /**
+     * Pushes {@code amount} packets of {@code size} out of the declared output faces; same as
+     * {@link #emit(long, long)}. Returns the number of accepted packets, not energy units.
+     */
+    default long emitPacketsFromFaces(long size, long amount) { return emit(size, amount); }
 
     /**
      * Sends {@code amount} packets of {@code size} to the block entity at {@code target},
@@ -108,7 +142,7 @@ public interface MachineBehaviorContext {
      * spends {@code abs(size)} stored energy units for each packet the target accepts, and returns
      * the accepted packet count, not remaining packets or energy units. The declared output
      * faces are not used. A null {@code side} means no
-     * side. A request above the declared maximum throws, as {@link #emit(long, long)} does.
+     * side. A request above the declared maximum throws, as {@link #emitPacketsFromFaces(long, long)} does.
      * A target in an unloaded chunk, without a block entity, or with no energy receiver accepts
      * nothing. The target is looked up for this call only and is not kept.
      */
@@ -118,7 +152,7 @@ public interface MachineBehaviorContext {
      * Charges a bound two-way part from the controller channel and arms {@code amount}
      * packets of {@code size}. The part emits them from its own faces on its next server tick.
      * Returns energy units stored, not a packet count; a partial packet may fit.
-     * This does not spend {@link #energy()}; the behavior keeps its own accounting and must
+     * This does not spend {@link #mainInputStored()}; the behavior keeps its own accounting and must
      * debit exactly these returned units from its source. Returns 0 when the part is missing, is not a two-way part,
      * or its output type differs from {@code type}. A request the part's output declaration
      * rejects throws.
@@ -132,10 +166,26 @@ public interface MachineBehaviorContext {
      * This does not require the machine to declare output faces,
      * but a machine whose stored energy has a declared type only feeds a matching part.
      * A request the part's output declaration rejects throws.
+     *
+     * @deprecated Use {@link #moveUnitsToPart(String, long, long)}. Removal is 0.4.
      */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emit", removeAt = "0.4")
     long emit(String part, long size, long amount);
 
-    /** Same as {@link #emit(String, long, long)}. */
+    /**
+     * Moves up to {@code amount} packets of {@code size} from stored energy into the named bound part;
+     * same as {@link #emit(String, long, long)}. Returns energy units moved, not a packet count.
+     */
+    default long moveUnitsToPart(String part, long size, long amount) { return emit(part, size, amount); }
+
+    /**
+     * Same as {@link #moveUnitsToPart(String, long, long)}.
+     *
+     * @deprecated Use {@link #moveUnitsToPart(String, long, long)}. Removal is 0.4.
+     */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emitToPart", removeAt = "0.4")
     default long emitToPart(String part, long size, long amount) { return emit(part, size, amount); }
 
     boolean toggle(int index);
@@ -144,8 +194,17 @@ public interface MachineBehaviorContext {
 
     float progress();
 
-    /** Fraction from 0 to 1 shown on the progress arrow. */
+    /**
+     * Sets the progress arrow fraction from 0 to 1.
+     *
+     * @deprecated Use {@link #setProgress(float)}. Removal is 0.4.
+     */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#progress", removeAt = "0.4")
     void progress(float fraction);
+
+    /** Fraction from 0 to 1 shown on the progress arrow. */
+    default void setProgress(float fraction) { progress(fraction); }
 
     /** Lights the working face for this tick. */
     void working(boolean working);
@@ -180,12 +239,24 @@ public interface MachineBehaviorContext {
 
     /**
      * Auxiliary buffer for {@code type}, in that energy's unit.
-     * This is not {@link #energy()}. An unknown type, or a machine with no auxiliary input, is 0.
-     * Prefer {@link #auxiliaryEnergy(String)} at call sites.
+     * This is not {@link #mainInputStored()}. An unknown type, or a machine with no auxiliary input, is 0.
+     *
+     * @deprecated Use {@link #auxiliaryStored(String)}. Removal is 0.4.
      */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#energy", removeAt = "0.4")
     long energy(String type);
 
-    /** Same as {@link #energy(String)}. */
+    /** Auxiliary buffer for {@code type}, in that energy's unit; same as {@link #energy(String)}. */
+    default long auxiliaryStored(String type) { return energy(type); }
+
+    /**
+     * Same as {@link #auxiliaryStored(String)}.
+     *
+     * @deprecated Use {@link #auxiliaryStored(String)}. Removal is 0.4.
+     */
+    @Deprecated(since = "0.2", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#auxiliaryEnergy", removeAt = "0.4")
     default long auxiliaryEnergy(String type) { return energy(type); }
 
     /**

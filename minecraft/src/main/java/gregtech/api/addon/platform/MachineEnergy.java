@@ -28,7 +28,7 @@ public final class MachineEnergy {
     }
 
     /** Main input's stored units. Returns zero when no main input is declared, even for a generator. */
-    public long mainInputStored() { return context.energy(); }
+    public long mainInputStored() { return context.mainInputStored(); }
 
     /** Removes all requested units from the main input, or returns false without removing any. */
     public boolean consumeMainInput(long units) {
@@ -43,7 +43,7 @@ public final class MachineEnergy {
     }
 
     /** Configured main capacity in units. Zero keeps the host's rated-input drain policy. */
-    public long capacity() { return context.capacity(); }
+    public long capacity() { return context.energyCapacity(); }
 
     /** Changes the configured capacity; the host applies its existing tick-end policy. */
     public void setCapacity(long units) {
@@ -52,7 +52,7 @@ public final class MachineEnergy {
     }
 
     /** Stored auxiliary-input units; unknown or undeclared types return zero. */
-    public long auxiliaryStored(String type) { return context.energy(type); }
+    public long auxiliaryStored(String type) { return context.auxiliaryStored(type); }
 
     /** Removes all requested auxiliary-input units, or returns false without removing any. */
     public boolean consumeAuxiliary(String type, long units) {
@@ -67,7 +67,8 @@ public final class MachineEnergy {
     public EnergyTransfer emitStored(long packetSize, long packetCount) {
         if (EnergyTransfer.requestUnits(packetSize, packetCount) == 0)
             return new EnergyTransfer(packetSize, packetCount, 0);
-        return EnergyTransfer.fromPackets(packetSize, packetCount, context.emit(packetSize, packetCount));
+        return EnergyTransfer.fromPackets(packetSize, packetCount,
+                context.emitPacketsFromFaces(packetSize, packetCount));
     }
 
     /**
@@ -90,7 +91,8 @@ public final class MachineEnergy {
     public EnergyTransfer transferStoredToPart(String part, long packetSize, long packetCount) {
         if (EnergyTransfer.requestUnits(packetSize, packetCount) == 0)
             return new EnergyTransfer(packetSize, packetCount, 0);
-        return new EnergyTransfer(packetSize, packetCount, context.emit(part, packetSize, packetCount));
+        return new EnergyTransfer(packetSize, packetCount,
+                context.moveUnitsToPart(part, packetSize, packetCount));
     }
 
     /**
