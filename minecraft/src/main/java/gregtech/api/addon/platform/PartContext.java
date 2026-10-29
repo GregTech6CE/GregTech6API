@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 //?}
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The placed part a {@link PartBehavior} reads and writes. Valid during that behavior's callbacks,

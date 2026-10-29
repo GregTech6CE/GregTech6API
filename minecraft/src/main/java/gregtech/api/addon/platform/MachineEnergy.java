@@ -6,6 +6,7 @@ import gregtech.api.energy.EnergyTransfer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Energy operations for a behavior machine, with explicit packet and unit accounting.
@@ -76,7 +77,8 @@ public final class MachineEnergy {
      * world-facing side, or null for an unsided request. Declared output faces are not used;
      * declared type and packet limits still apply. Missing or unloaded targets accept nothing.
      */
-    public EnergyTransfer emitStoredTo(BlockPos target, Direction receivingSide, long packetSize, long packetCount) {
+    public EnergyTransfer emitStoredTo(BlockPos target, @Nullable Direction receivingSide,
+                                       long packetSize, long packetCount) {
         if (EnergyTransfer.requestUnits(packetSize, packetCount) == 0)
             return new EnergyTransfer(packetSize, packetCount, 0);
         return EnergyTransfer.fromPackets(packetSize, packetCount,

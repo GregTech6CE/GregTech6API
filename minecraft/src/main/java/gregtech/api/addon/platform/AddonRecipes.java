@@ -16,6 +16,8 @@ import gregtech.api.addon.recipe.RecipeOutputChances;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /** Handles for machine recipe maps that already exist, including maps an addon declared. */
 public final class AddonRecipes {
@@ -35,20 +37,20 @@ public final class AddonRecipes {
          * inspect or locally modify a stack, but cannot alter the machine or another provider's input.
          * Retaining these snapshots does not give access to later inventory changes.
          */
-        Line find(List<ItemStack> items, List<FluidStack> fluids);
+        @Nullable Line find(List<ItemStack> items, List<FluidStack> fluids);
     }
 
     public interface Map {
         String name();
 
         /** Adds a static row. Null means the map rejected it. */
-        Line add(Line line);
+        @Nullable Line add(Line line);
 
         /** A display row for JEI and EMI. Machines do not craft it. Null means the map rejected it. */
-        Line addDisplay(Line line);
+        @Nullable Line addDisplay(Line line);
 
         /** An existing static row whose inputs this line would cover, or null. */
-        Line collision(Line line);
+        @Nullable Line collision(Line line);
 
         /** True when some static row already consumes this item. */
         boolean hasItemInput(ItemStack stack);
@@ -60,7 +62,8 @@ public final class AddonRecipes {
          * The first matching row, including dynamic providers. Null when nothing matches.
          * This query does not consume or modify the supplied stacks or lists.
          */
-        Line find(List<ItemStack> items, List<FluidStack> fluids, boolean needsOutputs, int inputSlots, int outputSlots);
+        @Nullable Line find(List<ItemStack> items, List<FluidStack> fluids, boolean needsOutputs,
+                            int inputSlots, int outputSlots);
     }
 
     /**
@@ -77,6 +80,7 @@ public final class AddonRecipes {
      * does not change this row. A duration below one tick is stored as one, and a presence-only fluid input's
      * stored amount is rewritten to one; the presence gate only checks that the fluid is there.
      */
+    @NullUnmarked
     public static final class Line {
         private final ItemStack[] itemInputs;
         private final ItemStack[] itemOutputs;

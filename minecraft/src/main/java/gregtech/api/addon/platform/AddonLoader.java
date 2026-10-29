@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 //?}
 import gregtech.api.addon.InstalledService;
 import net.minecraft.world.level.material.Fluid;
+import org.jspecify.annotations.Nullable;
 
 /** Loader entry for types whose signatures differ between Forge and NeoForge. GregTech installs it once. */
 public final class AddonLoader {
@@ -36,7 +37,7 @@ public final class AddonLoader {
         FluidStack fluid(String name, AddonFluids.Kind kind, int millibuckets);
 
         /** Null when no machine recipe map uses {@code name}. */
-        AddonRecipes.Map map(String name);
+        AddonRecipes.@Nullable Map map(String name);
 
         /** True when {@code fluid} is a gas. Empty and liquids are false. */
         boolean gas(Fluid fluid);

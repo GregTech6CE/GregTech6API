@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 
 /**
  * One addon behavior machine. GregTech builds the block, inventory, tanks, menu and screen.
@@ -107,11 +108,11 @@ public final class BehaviorMachine implements AddonMachine {
 
     @Override public MachineCasing casing() { return casing; }
     /** Null when the machine declares no main input. */
-    public EnergyInput energy() { return energy; }
+    public @Nullable EnergyInput energy() { return energy; }
     /** Null when the machine has no second energy input. */
-    public EnergyInput auxiliary() { return auxiliary; }
+    public @Nullable EnergyInput auxiliary() { return auxiliary; }
     /** Null when the machine does not emit energy. */
-    public EnergyOutput output() { return output; }
+    public @Nullable EnergyOutput output() { return output; }
     public String blockEntityId() { return blockEntityId; }
     public int guiWidth() { return guiWidth; }
     public int guiHeight() { return guiHeight; }
@@ -125,13 +126,13 @@ public final class BehaviorMachine implements AddonMachine {
     public int maxRange() { return maxRange; }
     public List<String> recipeMaps() { return List.copyOf(recipeMaps); }
     /** Null when every item and fluid face stays open and no automatic face was declared. */
-    public MachineIo io() { return io; }
+    public @Nullable MachineIo io() { return io; }
 
     /**
      * The face that accepts and supplies compressed gas, relative to the horizontal facing.
      * Null when this machine is not a compressed-gas valve. Pipes still use {@link #io()}.
      */
-    public MachineFace gasValve() { return gasValve; }
+    public @Nullable MachineFace gasValve() { return gasValve; }
 
     /** True when this machine may be read as a GT signal source by an adjacent signal wire. */
     public boolean signalOutput() { return signalOutput; }
@@ -236,7 +237,7 @@ public final class BehaviorMachine implements AddonMachine {
 
         private Builder(MachineCasing casing) { this.casing = casing; }
 
-        public Builder energy(EnergyInput value) { energy = value; return this; }
+        public Builder energy(@Nullable EnergyInput value) { energy = value; return this; }
 
         /** Second input. Its buffer is separate from {@link #energy}. The same face needs a different energy type. */
         public Builder auxiliaryEnergy(EnergyInput value) {
@@ -245,9 +246,9 @@ public final class BehaviorMachine implements AddonMachine {
             return this;
         }
 
-        public Builder energyOutput(EnergyOutput value) { output = value; return this; }
-        public Builder io(MachineIo value) { io = value; return this; }
-        public Builder blockEntityId(String value) { blockEntityId = value; return this; }
+        public Builder energyOutput(@Nullable EnergyOutput value) { output = value; return this; }
+        public Builder io(@Nullable MachineIo value) { io = value; return this; }
+        public Builder blockEntityId(@Nullable String value) { blockEntityId = value; return this; }
         public Builder gui(String texture) { gui = texture; return this; }
         public Builder guiSize(int width, int height) { guiWidth = width; guiHeight = height; return this; }
         public Builder energyGauge(int x, int y) { energyX = x; energyY = y; return this; }

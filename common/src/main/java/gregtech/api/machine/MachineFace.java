@@ -5,6 +5,7 @@ package gregtech.api.machine;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Machine-relative face. {@link #index()} and {@link #bit()} are the mask positions.
@@ -25,7 +26,7 @@ public enum MachineFace {
     public int bit() { return 1 << index; }
 
     /** Mask of {@code faces}; a null list is empty. */
-    public static int mask(List<MachineFace> faces) {
+    public static int mask(@Nullable List<MachineFace> faces) {
         int mask = 0;
         if (faces != null) for (MachineFace face : faces) mask |= face.bit();
         return mask;
@@ -38,7 +39,7 @@ public enum MachineFace {
     public static List<MachineFace> exceptFront() { return EXCEPT_FRONT; }
 
     /** Copies {@code faces}, rejecting a null entry or a repeated face. */
-    public static List<MachineFace> distinct(List<MachineFace> faces, String label) {
+    public static List<MachineFace> distinct(@Nullable List<MachineFace> faces, String label) {
         var copy = new ArrayList<MachineFace>();
         var seen = new HashSet<MachineFace>();
         if (faces != null) {
@@ -59,7 +60,7 @@ public enum MachineFace {
     }
 
     /** Same faces, ignoring order. */
-    public static boolean sameSet(List<MachineFace> left, List<MachineFace> right) {
+    public static boolean sameSet(@Nullable List<MachineFace> left, @Nullable List<MachineFace> right) {
         if (left == right) return true;
         if (left == null || right == null || left.size() != right.size()) return false;
         return new HashSet<>(left).equals(new HashSet<>(right));
@@ -69,7 +70,7 @@ public enum MachineFace {
      * Order-independent hash for {@link #sameSet}. Repeated faces count once, matching the set
      * comparison; length still takes part in {@code sameSet}.
      */
-    public static int hashSet(List<MachineFace> faces) {
+    public static int hashSet(@Nullable List<MachineFace> faces) {
         return faces == null ? 0 : new HashSet<>(faces).hashCode();
     }
 }

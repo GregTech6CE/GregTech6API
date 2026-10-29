@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 
 /**
  * One addon structure part. With no energy and no function it is a casing.
@@ -67,13 +68,13 @@ public final class LayoutPart {
     public float hardness() { return hardness; }
 
     /** Null when this part does not emit. */
-    public EnergyOutput energy() { return energy; }
+    public @Nullable EnergyOutput energy() { return energy; }
 
     /** Zero when this part does not emit. An output part is at least 1. */
     public long energyCapacity() { return energyCapacity; }
 
     /** Null when this part does not accept energy. */
-    public EnergyInput energyInput() { return energyInput; }
+    public @Nullable EnergyInput energyInput() { return energyInput; }
 
     /** Zero when this part is not a condition. An input part is at least 1. */
     public long conditionPerTick() { return conditionPerTick; }
@@ -81,13 +82,13 @@ public final class LayoutPart {
     public boolean condition() { return conditionPerTick > 0; }
 
     /** Null when this part has no item slots. */
-    public PartSlots slots() { return slots; }
+    public @Nullable PartSlots slots() { return slots; }
 
     /** Null when this part has no fluid tanks. */
-    public PartTanks tanks() { return tanks; }
+    public @Nullable PartTanks tanks() { return tanks; }
 
     /** Null when a right click does not open this part's menu. A path in {@code namespace:path.png} form. */
-    public String gui() { return gui; }
+    public @Nullable String gui() { return gui; }
 
     /** The placed part receives a server tick. */
     public boolean ticks() { return ticks; }

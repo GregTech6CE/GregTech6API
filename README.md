@@ -55,6 +55,7 @@ API 版本仍以 `common/build.gradle` 为准。0.3 包含公开签名删除，�
 - `MachineBehaviorContext` 的旧重载与别名已移除，宿主实现需要改用新名字：`emit(long, long)` → `emitPacketsFromFaces`，`emit(String, long, long)`/`emitToPart` → `moveUnitsToPart`，`capacity()` → `energyCapacity`，`capacity(int)` → `tankCapacity`，`energy()` → `mainInputStored`，`energy(String)`/`auxiliaryEnergy` → `auxiliaryStored`，`progress(float)` → `setProgress`，`item(int)` → `liveItem`（附属读取请使用 `inventoryAccess().snapshot(int)`）。
 - `EnergyInput.collapseDefaultCapacity()` 已移除；`withFaces` 现在把零容量存为未指定，构建后的行为机语义不变。
 - `ModData.bindPresence` 只能绑定一次，重复调用会抛 `IllegalStateException`；服务重复绑定的异常会写明首个绑定者的类与位置，并以 cause 附带其调用栈。
+- 公共 API 使用 JSpecify（`org.jspecify:jspecify`）标注可空性：包级 `@NullMarked`，可空返回值与参数用 `@Nullable`。该依赖仅编译期使用，不进入运行时 classpath。
 - `GTVoltageTiers.VOLTAGES`/`NAMES` 和 `MaterialTextureSet.MODELED` 已移除，改用 `tierCount()`、`tierVoltage(int)`、`tierName(int)` 与 `modeled()`。
 - `MachineControl` 移至 `gregtech.api.platform.machine`，旧位置 `gregtech.api.machine.MachineControl` 已移除；宿主和附属改用新包的 `MachineControl` 与 `MachineControl.Provider`。
 - `RecipeMachine` 的上限与 `BehaviorMachine` 对齐：`tier` 不超过 255，主输入 `perTick` 必须在 1..`AddonLimits.MAX_PER_TICK`，并且落在声明的包范围（range）内。原本靠 0 或超大值通过的声明现在会报错。id 不是合法 machine type 时，报错会提示显式调用 `machineType(...)`。

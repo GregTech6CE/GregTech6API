@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Core material definition, analogous to GregTech {@code OreDictMaterial}.
@@ -157,7 +158,7 @@ public final class GTMaterial {
         return furnaceBurnTime;
     }
 
-    public GTMaterial getTargetBurningMaterial() {
+    public @Nullable GTMaterial getTargetBurningMaterial() {
         return targetBurningMaterial;
     }
 
@@ -174,7 +175,7 @@ public final class GTMaterial {
     public GTMaterial getTargetPulverMaterial() { return targetPulverMaterial; }
     public long getTargetPulverAmount() { return targetPulverAmount; }
     /** Null material means this; a negative amount is stored as zero. */
-    public GTMaterial setPulver(GTMaterial material, long amount) {
+    public GTMaterial setPulver(@Nullable GTMaterial material, long amount) {
         targetPulverMaterial = material == null ? this : material.resolve();
         targetPulverAmount = Math.max(0, amount);
         return this;
@@ -365,7 +366,7 @@ public final class GTMaterial {
     }
 
     /** GT6 {@code setBurning}; ash left after burning one item-worth of this material. A negative amount is zero. */
-    public GTMaterial setBurning(GTMaterial material, long amount) {
+    public GTMaterial setBurning(@Nullable GTMaterial material, long amount) {
         this.targetBurningMaterial = material == null ? null : material.resolve();
         this.targetBurningAmount = Math.max(0L, amount);
         return this;
@@ -391,7 +392,7 @@ public final class GTMaterial {
      * GT6 {@code setCrushing}; result of crushing this. Amount 0 disables; null material means this.
      * A negative amount is stored as zero.
      */
-    public GTMaterial setCrushing(GTMaterial material, long amount) {
+    public GTMaterial setCrushing(@Nullable GTMaterial material, long amount) {
         this.targetCrushingMaterial = material == null ? this : material.resolve();
         this.targetCrushingAmount = Math.max(0L, amount);
         return this;
@@ -401,7 +402,7 @@ public final class GTMaterial {
      * GT6 {@code setSmelting}; result of smelting this. Amount 0 disables; null material means this.
      * A negative amount is stored as zero.
      */
-    public GTMaterial setSmelting(GTMaterial material, long amount) {
+    public GTMaterial setSmelting(@Nullable GTMaterial material, long amount) {
         this.targetSmeltingMaterial = material == null ? this : material.resolve();
         this.targetSmeltingAmount = Math.max(0L, amount);
         if (this.targetSmeltingAmount > 0) {

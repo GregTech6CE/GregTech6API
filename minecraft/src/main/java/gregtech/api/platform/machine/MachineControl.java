@@ -5,7 +5,7 @@ package gregtech.api.platform.machine;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Optional machine controls. Relays resolve the target on every operation, never cache a machine.
@@ -102,7 +102,7 @@ public interface MachineControl {
 
     interface Provider {
         /** Null means that this face has no control interface. */
-        MachineControl machineControl(Direction side);
+        @Nullable MachineControl machineControl(Direction side);
     }
 
     @Nullable

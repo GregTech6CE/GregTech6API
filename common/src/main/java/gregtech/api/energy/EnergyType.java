@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Short energy names such as {@code EU}. Builders canonicalize known names, so {@code "eu"} becomes
@@ -60,7 +61,7 @@ public final class EnergyType {
         return canonical;
     }
 
-    public static boolean same(String left, String right) {
+    public static boolean same(@Nullable String left, @Nullable String right) {
         return left != null && left.equalsIgnoreCase(right);
     }
 

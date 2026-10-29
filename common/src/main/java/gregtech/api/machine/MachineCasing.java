@@ -4,6 +4,7 @@ package gregtech.api.machine;
 
 import gregtech.api.addon.AddonNames;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Block id, material, and the optional machine type and tier shared by the three machine templates.
@@ -29,7 +30,7 @@ public final class MachineCasing {
     public String material() { return material; }
 
     /** Null when the builder did not set one. A built machine has resolved this. */
-    public String machineType() { return machineType; }
+    public @Nullable String machineType() { return machineType; }
 
     public boolean tierSpecified() { return tierSpecified; }
 

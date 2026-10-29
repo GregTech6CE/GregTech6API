@@ -7,6 +7,8 @@ package gregtech.api.addon.machine;
 
 import gregtech.api.addon.*;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * One override for a built-in machine variant, keyed by {@code machineName + tier}.
  * Only non-null fields change; every other field keeps its built-in value.
@@ -15,10 +17,10 @@ import gregtech.api.addon.*;
  */
 public record MachineTuning(
         String machineName, int tier,
-        Integer parallelLimit,
-        Long energyIn, Long energyInMin, Long energyInMax,
-        Integer processingEfficiency,
-        Boolean constantEnergy, Boolean cheapOverclocking) {
+        @Nullable Integer parallelLimit,
+        @Nullable Long energyIn, @Nullable Long energyInMin, @Nullable Long energyInMax,
+        @Nullable Integer processingEfficiency,
+        @Nullable Boolean constantEnergy, @Nullable Boolean cheapOverclocking) {
     public MachineTuning {
         if (!AddonNames.matches(AddonNames.MACHINE_TYPE, machineName))
             throw new IllegalArgumentException("Invalid tuned machine name: " + machineName);

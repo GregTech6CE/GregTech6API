@@ -5,7 +5,7 @@ package gregtech.api.addon.platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * One addon part bound by a formed behavior machine. An energy part and a functional part

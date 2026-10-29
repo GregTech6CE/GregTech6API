@@ -17,6 +17,7 @@ import gregtech.api.machine.*;
 
 import java.util.List;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * One addon recipe machine. Defaults: basic kind, parallel 1,
@@ -69,13 +70,13 @@ public final class RecipeMachine implements AddonMachine {
     public EnergyInput energy() { return energy; }
 
     /** Second input. Its buffer is separate from {@link #energy}; null when the machine has none. */
-    public EnergyInput auxiliary() { return auxiliary; }
+    public @Nullable EnergyInput auxiliary() { return auxiliary; }
 
     /** When true, a recipe's special value is charged from the auxiliary buffer before progress starts. */
     public boolean startupEnergy() { return startupEnergy; }
 
     /** Null when item and fluid faces were left at the six-side default with no automatic face. */
-    public MachineIo io() { return io; }
+    public @Nullable MachineIo io() { return io; }
 
     public boolean basic() { return !largeRecipe; }
     public boolean largeRecipe() { return largeRecipe; }
@@ -153,7 +154,7 @@ public final class RecipeMachine implements AddonMachine {
         /** Charge each recipe's {@code special} from the auxiliary buffer before progress starts. */
         public Builder startupEnergy(boolean value) { startupEnergy = value; return this; }
 
-        public Builder io(MachineIo value) { io = value; return this; }
+        public Builder io(@Nullable MachineIo value) { io = value; return this; }
         public Builder basic() { largeRecipe = false; return this; }
         public Builder largeRecipe() { largeRecipe = true; return this; }
         public Builder recipeMap(String value) { recipeMap = value; return this; }
@@ -168,7 +169,7 @@ public final class RecipeMachine implements AddonMachine {
         public Builder minimumLightAbove(int value) { minimumLightAbove = value; return this; }
         public Builder searchOutputTanks(boolean value) { searchOutputTanks = value; return this; }
         public Builder exclusiveOutputs(boolean value) { exclusiveOutputs = value; return this; }
-        public Builder structureKeys(List<String> value) { structureKeys = value; return this; }
+        public Builder structureKeys(@Nullable List<String> value) { structureKeys = value; return this; }
 
         public RecipeMachine build() {
             if (casing == null) throw new IllegalArgumentException("Missing casing");

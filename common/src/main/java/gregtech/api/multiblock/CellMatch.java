@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * What a structure cell matches. GregTech parts, structure casings and addon parts share
@@ -164,7 +165,7 @@ public sealed interface CellMatch permits CellMatch.Part, CellMatch.Air, CellMat
         private AnyFluid(String tag) { this.tag = tag; }
 
         /** Null when this matches every fluid. */
-        public String tag() { return tag; }
+        public @Nullable String tag() { return tag; }
 
         @Override public boolean equals(Object other) {
             return other instanceof AnyFluid that && Objects.equals(tag, that.tag);
