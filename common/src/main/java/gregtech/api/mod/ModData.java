@@ -1,6 +1,7 @@
 package gregtech.api.mod;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -28,7 +29,7 @@ public final class ModData {
         if (presence == null) throw new IllegalStateException("Mod presence has not been bound by the platform");
         this.loaded = presence.test(id);
         MODS.put(id, this);
-        MODS.put(id.toLowerCase(), this);
+        MODS.put(id.toLowerCase(Locale.ROOT), this);
     }
 
     public ModData setLoaded(boolean loaded) {

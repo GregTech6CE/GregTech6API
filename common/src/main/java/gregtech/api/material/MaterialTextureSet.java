@@ -1,5 +1,6 @@
 package gregtech.api.material;
 
+import java.util.Locale;
 
 /**
  * Item icon set folder under {@code textures/item/material_icons/}, matching GregTech 6 texture sets.
@@ -52,6 +53,6 @@ public enum MaterialTextureSet {
 
     /** Lowercase folder name used in resource locations (MC normalizes paths to lowercase). */
     public String folder() {
-        return name().toLowerCase();
+        return name().toLowerCase(Locale.ROOT);
     }
 }

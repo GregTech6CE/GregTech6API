@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -435,7 +436,7 @@ public final class GTMaterial {
     }
 
     public String getTranslationKey() {
-        return "material.gt6ce." + name.toLowerCase();
+        return "material.gt6ce." + name.toLowerCase(Locale.ROOT);
     }
 
     @Override

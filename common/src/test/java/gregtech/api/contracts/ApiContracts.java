@@ -5,8 +5,11 @@ import gregtech.api.addon.GregTechAddons;
 import gregtech.api.energy.EnergyType;
 import gregtech.api.machine.BasicMachineParameters;
 import gregtech.api.material.GTMaterial;
+import gregtech.api.material.MaterialTextureSet;
+import gregtech.api.mod.ModData;
 
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.jar.JarFile;
 
 /** Dependency-free consumer of the packaged API; deliberately has no host implementation. */
@@ -16,6 +19,7 @@ public final class ApiContracts {
                 "API version must match the independently published artifact");
         checkJarClosure();
         checkEnergyContracts();
+        checkLocaleContracts();
         try {
             AddonRuntime.services();
             throw new AssertionError("Host queries must fail before the runtime is bound");
@@ -78,6 +82,23 @@ public final class ApiContracts {
         range(omitted, false, 16, 64);
         range(omitted, true, 1, 4096);
         reject(() -> machine("EU", 32).energyRange(10, 5).build());
+    }
+
+    private static void checkLocaleContracts() {
+        Locale previous = Locale.getDefault();
+        Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+        try {
+            check(MaterialTextureSet.FIERY.folder().equals("fiery"), "Texture folders must not depend on the default locale");
+            check(MaterialTextureSet.LIGNITE.folder().equals("lignite"), "Texture folders must not depend on the default locale");
+            check(new GTMaterial(1, "Iron", "Iron", 0xFFFFFF).getTranslationKey().equals("material.gt6ce.iron"),
+                    "Translation keys must not depend on the default locale");
+            ModData.bindPresence(id -> false);
+            ModData mod = new ModData("IronMod", "Iron Mod");
+            check(ModData.MODS.get("ironmod") == mod, "Lowercase mod keys must not depend on the default locale");
+        } finally {
+            Locale.setDefault(previous);
+            ModData.MODS.clear();
+        }
     }
 
     private static BasicMachineParameters.Builder machine(String energy, long amount) {
