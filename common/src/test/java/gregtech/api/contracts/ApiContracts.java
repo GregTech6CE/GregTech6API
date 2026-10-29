@@ -3,9 +3,11 @@ package gregtech.api.contracts;
 import gregtech.api.addon.AddonLimits;
 import gregtech.api.addon.AddonRuntime;
 import gregtech.api.addon.GregTechAddons;
+import gregtech.api.addon.InstalledService;
 import gregtech.api.addon.recipe.RecipeMachine;
 import gregtech.api.energy.EnergyInput;
 import gregtech.api.energy.EnergyType;
+import gregtech.api.energy.GTVoltageTiers;
 import gregtech.api.machine.BasicMachineParameters;
 import gregtech.api.machine.MachineCasing;
 import gregtech.api.machine.MachineFace;
@@ -27,6 +29,7 @@ public final class ApiContracts {
         checkJarClosure();
         checkEnergyContracts();
         checkSharedValueContracts();
+        checkInstalledServiceContracts();
         checkMachineTemplateContracts();
         checkMaterialContracts();
         checkMachineFaceMaskContracts();
@@ -94,6 +97,22 @@ public final class ApiContracts {
         range(omitted, false, 16, 64);
         range(omitted, true, 1, 4096);
         reject(() -> machine("EU", 32).energyRange(10, 5).build());
+        check(GTVoltageTiers.tierCount() == 16, "Sixteen voltage tiers");
+        check(GTVoltageTiers.tierVoltage(1) == 32 && GTVoltageTiers.tierName(1).equals("LV"),
+                "Tier 1 is LV at 32 V");
+    }
+
+    private static void checkInstalledServiceContracts() {
+        InstalledService<String> service = new InstalledService<>();
+        service.bind("first", "missing service", "already installed");
+        check(service.get("missing service").equals("first"), "Bound service must be readable");
+        try {
+            service.bind("second", "missing service", "already installed");
+            throw new AssertionError("A second bind must fail");
+        } catch (IllegalStateException expected) {
+            check(expected.getMessage().contains("first bound by"), "Duplicate bind must name the first binder");
+            check(expected.getCause() != null, "Duplicate bind must carry the first binder stack");
+        }
     }
 
     private static void checkSharedValueContracts() {
@@ -175,6 +194,15 @@ public final class ApiContracts {
 
     private static void checkModDataContracts() throws InterruptedException {
         ModData.bindPresence(id -> true);
+        Locale previous = Locale.getDefault();
+        Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+        try {
+            ModData mod = new ModData("IronMod", "Iron Mod");
+            check(ModData.MODS.get("ironmod") == mod, "Lowercase mod keys must not depend on the default locale");
+        } finally {
+            Locale.setDefault(previous);
+        }
+        ModData.MODS.clear();
         int threads = 4;
         int perThread = 250;
         Thread[] workers = new Thread[threads];
@@ -192,6 +220,12 @@ public final class ApiContracts {
         } finally {
             ModData.MODS.clear();
         }
+        try {
+            ModData.bindPresence(id -> true);
+            throw new AssertionError("Rebinding mod presence must fail");
+        } catch (IllegalStateException expected) {
+            check(expected.getMessage().contains("already bound"), "Missing rebind diagnostic");
+        }
     }
 
     private static void checkLocaleContracts() {
@@ -202,12 +236,8 @@ public final class ApiContracts {
             check(MaterialTextureSet.LIGNITE.folder().equals("lignite"), "Texture folders must not depend on the default locale");
             check(new GTMaterial(1, "Iron", "Iron", 0xFFFFFF).getTranslationKey().equals("material.gt6ce.iron"),
                     "Translation keys must not depend on the default locale");
-            ModData.bindPresence(id -> false);
-            ModData mod = new ModData("IronMod", "Iron Mod");
-            check(ModData.MODS.get("ironmod") == mod, "Lowercase mod keys must not depend on the default locale");
         } finally {
             Locale.setDefault(previous);
-            ModData.MODS.clear();
         }
     }
 

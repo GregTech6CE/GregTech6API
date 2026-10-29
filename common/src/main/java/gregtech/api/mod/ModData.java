@@ -10,10 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ModData {
     /** Concurrent: loader mod constructors may register in parallel. */
     public static final Map<String, ModData> MODS = new ConcurrentHashMap<>();
-    private static java.util.function.Predicate<String> presence;
+    private static volatile java.util.function.Predicate<String> presence;
 
-    /** The platform must bind its loader query before any metadata or material holder initializes. */
-    public static void bindPresence(java.util.function.Predicate<String> resolver) {
+    /** The platform must bind its loader query once, before any metadata or material holder initializes. */
+    public static synchronized void bindPresence(java.util.function.Predicate<String> resolver) {
+        if (presence != null) throw new IllegalStateException("Mod presence is already bound");
         if (!MODS.isEmpty()) throw new IllegalStateException("Mod presence must be bound before metadata initialization");
         presence = java.util.Objects.requireNonNull(resolver, "resolver");
     }

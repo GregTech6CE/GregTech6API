@@ -16,22 +16,34 @@ public final class GTVoltageTiers {
     private static final long[] VOLTAGE_TABLE = {
             8L, 32L, 128L, 512L, 2048L, 8192L, 32768L, 131072L, 524288L, 2097152L,
             8388608L, 33554432L, 134217728L, 536870912L, 2147483648L, 8589934592L};
-    /** GT6 {@code CS.V} - a copy of the maximum voltage of each tier, ULV first. Mutating it does not change lookups. */
-    public static final long[] VOLTAGES = VOLTAGE_TABLE.clone();
 
     private static final String[] NAME_TABLE = {
             "ULV", "LV", "MV", "HV", "EV", "IV", "LuV", "ZPM", "UV", "PUV1",
             "PUV2", "PUV3", "PUV4", "PUV5", "XV", "XV"};
-    /** Original GT6 CS.VN names. Mutating this copy does not change lookups. */
-    public static final String[] NAMES = NAME_TABLE.clone();
 
     private GTVoltageTiers() {}
 
+    /** Number of voltage tiers in the table. */
+    public static int tierCount() { return VOLTAGE_TABLE.length; }
+
+    /** GT6 {@code CS.V}: maximum voltage of tier {@code index}, ULV first. */
+    public static long tierVoltage(int index) {
+        if (index < 0 || index >= VOLTAGE_TABLE.length)
+            throw new IndexOutOfBoundsException("Tier " + index + " outside 0.." + (VOLTAGE_TABLE.length - 1));
+        return VOLTAGE_TABLE[index];
+    }
+
+    /** GT6 {@code CS.VN}: name of tier {@code index}, ULV first. The last two tiers are both {@code XV}. */
+    public static String tierName(int index) {
+        if (index < 0 || index >= NAME_TABLE.length)
+            throw new IndexOutOfBoundsException("Tier " + index + " outside 0.." + (NAME_TABLE.length - 1));
+        return NAME_TABLE[index];
+    }
+
     /**
      * GT6 {@code UT.Code.tier}/{@code tierMax}: the index of the tier {@code size} belongs to.
-     * A value above the table returns {@code VOLTAGES.length} (16), as GT6 does; that is not a valid
-     * index, so clamp it to {@code VOLTAGES.length - 1} before indexing. {@code Long.MIN_VALUE} keeps
-     * GT6's signed-magnitude behavior and returns tier 0.
+     * A value above the table returns 16, as GT6 does; that is not a valid index, so clamp it to
+     * 15 before indexing. {@code Long.MIN_VALUE} keeps GT6's signed-magnitude behavior and returns tier 0.
      */
     public static int tierMax(long size) {
         long value = Math.abs(size);

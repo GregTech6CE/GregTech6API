@@ -1,5 +1,6 @@
 package gregtech.api.material;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -48,8 +49,10 @@ public enum MaterialTextureSet {
     SPACE,
     BRICK;
 
+    private static final MaterialTextureSet[] MODELED_SETS = values();
+
     /** Texture sets that have shared model JSON under {@code models/item/material/}. */
-    public static final MaterialTextureSet[] MODELED = values();
+    public static List<MaterialTextureSet> modeled() { return List.of(MODELED_SETS); }
 
     /** Lowercase folder name used in resource locations (MC normalizes paths to lowercase). */
     public String folder() {
