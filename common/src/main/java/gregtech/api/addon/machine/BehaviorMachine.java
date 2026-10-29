@@ -196,8 +196,13 @@ public final class BehaviorMachine implements AddonMachine {
 
     @Override public String toString() {
         return "BehaviorMachine[casing=" + casing + ", energy=" + energy + ", auxiliary=" + auxiliary
-                + ", output=" + output + ", gui=" + gui + ", maxRange=" + maxRange
-                + ", recipeMaps=" + recipeMaps + "]";
+                + ", output=" + output + ", blockEntityId=" + blockEntityId
+                + ", guiSize=" + guiWidth + "x" + guiHeight + ", gui=" + gui
+                + ", energyGauge=" + energyX + "," + energyY + ", items=" + items
+                + ", fluids=" + fluids + ", toggles=" + toggles + ", progress=" + progress
+                + ", maxRange=" + maxRange + ", recipeMaps=" + recipeMaps + ", io=" + io
+                + ", gasValve=" + gasValve + ", signalOutput=" + signalOutput
+                + ", clientState=" + clientState + "]";
     }
 
     @Override public int hashCode() {

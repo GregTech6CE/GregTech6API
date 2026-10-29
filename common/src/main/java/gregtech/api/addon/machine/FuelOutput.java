@@ -14,7 +14,8 @@ import java.util.Objects;
 /**
  * One fuel-generator packet and where it leaves. This is not an {@link EnergyOutput}:
  * the packet is a single per-tick amount, and the position is {@link Placement#FRONT},
- * {@link Placement#BACK}, or {@link Placement#BEHIND}.
+ * {@link Placement#BACK}, or {@link Placement#BEHIND}. Equality compares the energy type
+ * case-sensitively, unlike {@link EnergyOutput}.
  */
 public final class FuelOutput {
     private final String type;

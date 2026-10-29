@@ -14,6 +14,7 @@ import java.util.Objects;
  * with no faces, which is sent only with {@code MachineBehaviorContext.emitTo}.
  * {@code minSize} defaults to 1. {@code allowNegative()} is only for KU and RU, where the sign
  * is direction. A part also names a positive capacity on {@link gregtech.api.addon.machine.LayoutPart}.
+ * Equality compares faces without order and the energy type case-insensitively.
  */
 public final class EnergyOutput {
     private final String type;

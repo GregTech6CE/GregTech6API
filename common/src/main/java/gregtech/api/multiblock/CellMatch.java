@@ -175,7 +175,10 @@ public sealed interface CellMatch permits CellMatch.Part, CellMatch.Air, CellMat
         @Override public String toString() { return tag == null ? "anyfluid" : "anyfluid#" + tag; }
     }
 
-    /** Any one of a fixed set of matches. */
+    /**
+     * Any one of a fixed set of matches. Matching treats the members as a set, but equality
+     * compares the written order.
+     */
     final class OneOf implements CellMatch {
         private final List<CellMatch> members;
 

@@ -118,7 +118,8 @@ public final class LayoutPart {
         return "LayoutPart[name=" + name + ", material=" + material + ", texture=" + texture
                 + ", hardness=" + hardness + ", energy=" + energy + ", energyInput=" + energyInput
                 + ", energyCapacity=" + energyCapacity + ", conditionPerTick=" + conditionPerTick
-                + ", slots=" + slots + ", tanks=" + tanks + ", gui=" + gui + "]";
+                + ", slots=" + slots + ", tanks=" + tanks + ", gui=" + gui
+                + ", ticks=" + ticks + ", handlesUse=" + handlesUse + ", fields=" + fields + "]";
     }
 
     @Override public int hashCode() {

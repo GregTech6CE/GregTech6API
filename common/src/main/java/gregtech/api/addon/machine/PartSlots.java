@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * Item slots on one structure part. Faces are relative to the part's horizontal facing.
  * An empty face list does not accept pipes on that action. A player click is
- * {@link LayoutPart.Builder#use()}, not a face.
+ * {@link LayoutPart.Builder#use()}, not a face. Equality compares each face list in its written order.
  */
 public final class PartSlots {
     public static final int MAX_SLOTS = 16;

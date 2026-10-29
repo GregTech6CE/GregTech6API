@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * Fluid tanks on one structure part. Faces are relative to the part's horizontal facing.
  * An empty face list does not accept pipes on that action. A null side does not insert or extract.
- * Breaking the part does not spill the fluid.
+ * Breaking the part does not spill the fluid. Equality compares each face list in its written order.
  */
 public final class PartTanks {
     public static final int MAX_TANKS = 8;

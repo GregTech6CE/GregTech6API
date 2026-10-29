@@ -12,7 +12,7 @@ import java.util.Objects;
  * Energy faces are not here; they stay on {@link gregtech.api.energy.EnergyInput}.
  * An automatic face is independent of the matching face list: the machine pushes on the automatic
  * face, while the list only limits what pipes may take or insert. An automatic face does not have
- * to appear in that list.
+ * to appear in that list. Equality compares each face list in its written order.
  */
 public final class MachineIo {
     private final List<MachineFace> itemInputs;
@@ -82,7 +82,9 @@ public final class MachineIo {
     @Override public String toString() {
         return "MachineIo[itemIn=" + itemInputs + ", itemOut=" + itemOutputs + ", fluidIn=" + fluidInputs
                 + ", fluidOut=" + fluidOutputs + ", itemAutoIn=" + itemAutoInput + ", itemAutoOut=" + itemAutoOutput
-                + ", fluidAutoIn=" + fluidAutoInput + ", fluidAutoOut=" + fluidAutoOutput + "]";
+                + ", fluidAutoIn=" + fluidAutoInput + ", fluidAutoOut=" + fluidAutoOutput
+                + ", itemOutTarget=" + itemOutputTarget + ", fluidOutTarget=" + fluidOutputTarget
+                + ", itemInSource=" + itemInputSource + ", fluidInSource=" + fluidInputSource + "]";
     }
 
     @Override public int hashCode() {
