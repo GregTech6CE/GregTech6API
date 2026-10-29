@@ -1,0 +1,17 @@
+.gradle/
+build/
+.stonecutter/
+run/
+run-*/
+logs/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.DS_Store
+Thumbs.db
+/work/
+/local.properties
+.env
+.env.*

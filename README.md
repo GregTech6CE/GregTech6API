@@ -1,0 +1,43 @@
+# GregTech6API
+
+GT6CE 的独立公共 API 仓库，提供纯 Java 契约与按 Minecraft/加载器版本编译的游戏接口。内容表、执行引擎、服务实现、SPI provider 和游戏资产由 [GregTech6](https://github.com/GregTech6CE/GregTech6) 主库维护。
+
+## 源码与构建
+
+| 目录 | 内容 |
+| --- | --- |
+| `common/src/main/java/gregtech/api/` | Java 17 公共模型、能源协议、机器与材料声明、附属 SPI |
+| `common/src/test/` | 仅依赖公共 JAR 的消费者与契约回归 |
+| `minecraft/src/main/java/gregtech/api/` | Minecraft 游戏侧 API，经 Stonecutter 生成两个版本 |
+| `minecraft/src/test/` | SDK 纯值与门面绑定错误的 JUnit 回归，不加载游戏运行时 |
+
+在仓库根运行，Windows 使用 `gradlew.bat`：
+
+```bash
+./gradlew -p common check assemble
+# 游戏 API 按目标选择一条
+./gradlew :api-platform:1.20.1-forge:build
+./gradlew :api-platform:1.21.1-neoforge:build
+```
+
+纯 API 命令不配置 Minecraft。Forge 使用 Java 17，NeoForge 使用 Java 21；可通过 `JAVA17_HOME`、`JAVA21_HOME` 提供工具链。共享输入中的 `//?` 分支由 Stonecutter 处理，不直接删除注释中的另一版本源码。`check` 运行 JUnit 回归与独立 JAR 契约测试。
+
+当前版本为 `1.0.0`。`GregTechAddons.apiVersion()` 返回 `major * 1000 + minor`，即 `1000`；`apiMajor()` 与 `apiMinor()` 分别返回 `1` 与 `0`。
+
+| 坐标 | 产物目录 |
+| --- | --- |
+| `gregtech:gt6ce-api:1.0.0` | `common/build/libs/` |
+| `gregtech:gt6ce-addon-sdk-1.20.1-forge:1.0.0` | `minecraft/versions/1.20.1-forge/build/libs/` |
+| `gregtech:gt6ce-addon-sdk-1.21.1-neoforge:1.0.0` | `minecraft/versions/1.21.1-neoforge/build/libs/` |
+
+每项包含 binary、sources 和 javadoc JAR。游戏 SDK 使用开发环境的 Mojang 名称，仅声明公共库为传递依赖；消费者还需对应 Minecraft/加载器开发环境。这些坐标是发布配置，不表示已上传公共 Maven 服务。公共库的 publication 为 `api`，平台为 `addonApi`，发布仓库需另行配置。
+
+## 主模组与附属接入
+
+主库通过 Git 子模块锁定本仓库提交，并在同一 Gradle 构建中接入 `:api` 和 `:api-platform:<node>`；本仓库可以自行构建，不依赖主库。主模组负责运行时携带唯一一份 API，Forge 游戏 API 随主模组重映射，纯 Java API 保持原字节码。
+
+附属使用 `compileOnly` 依赖匹配的 API；使用本地文件时同时提供公共库与目标平台 SDK。不要把 API 类重新打进附属，也不要把 SDK 放入 `mods/`。`AddonRuntime`、`AddonPlatform`、`AddonLoader` 由宿主在初始化阶段绑定；脱离宿主可使用声明和纯模型，但不能查询宿主材料、物品或配方。客户端接口只在客户端入口加载。
+
+## 来源与许可
+
+代码提取自 [GregTech6CE/GregTech6](https://github.com/GregTech6CE/GregTech6)，以 `e1dd804c258a10dddd84b47d3f92aed25655f40d` 为来源基线，包含独立 API 模块化修改。原作者与来源声明保留在源码和 NOTICE 中。代码采用 LGPL-3.0-or-later，见 [LICENSE](LICENSE) 与 [GPL-3.0.txt](GPL-3.0.txt)；本仓库不携带主模组游戏资产。

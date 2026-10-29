@@ -1,0 +1,8 @@
+plugins { id 'base' }
+
+// Keep root entry points limited to the platform-independent contracts.
+tasks.named('check').configure { dependsOn ':api:check' }
+tasks.named('assemble').configure { dependsOn ':api:assemble' }
+tasks.named('clean').configure {
+    dependsOn ':api:clean'
+}

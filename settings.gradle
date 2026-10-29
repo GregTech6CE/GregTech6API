@@ -1,0 +1,24 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.minecraftforge.net/' }
+        maven { url = 'https://maven.neoforged.net/releases/' }
+    }
+}
+
+plugins {
+    id 'dev.kikugie.stonecutter' version '0.7.11'
+}
+
+rootProject.name = 'gt6ce-api'
+include 'api'
+project(':api').projectDir = file('common')
+include 'api-platform'
+project(':api-platform').projectDir = file('minecraft')
+stonecutter {
+    create(project(':api-platform')) {
+        version('1.20.1-forge', '1.20.1')
+        version('1.21.1-neoforge', '1.21.1')
+        vcsVersion = '1.20.1-forge'
+    }
+}
