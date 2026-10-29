@@ -86,35 +86,6 @@ public final class FuelGenerator implements AddonMachine {
         private Builder(MachineCasing casing) { this.casing = casing; }
 
         public Builder output(FuelOutput value) { output = value; return this; }
-        /**
-         * @deprecated Fuel generators cannot declare energy input; removal is 0.4.
-         */
-        @Deprecated(since = "0.2", forRemoval = true)
-        @AddonApiRemoval(id = "gregtech.api.addon.machine.FuelGenerator.Builder#energy", removeAt = "0.4")
-        public Builder energy(EnergyInput value) {
-            if (value != null) throw new IllegalArgumentException("Fuel generators cannot declare energy input");
-            return this;
-        }
-
-        /**
-         * @deprecated Fuel generators cannot declare energy output; removal is 0.4.
-         */
-        @Deprecated(since = "0.2", forRemoval = true)
-        @AddonApiRemoval(id = "gregtech.api.addon.machine.FuelGenerator.Builder#energyOutput", removeAt = "0.4")
-        public Builder energyOutput(EnergyOutput value) {
-            if (value != null) throw new IllegalArgumentException("Fuel generators cannot declare energy output");
-            return this;
-        }
-
-        /**
-         * @deprecated Fuel generators cannot declare item and fluid faces; removal is 0.4.
-         */
-        @Deprecated(since = "0.2", forRemoval = true)
-        @AddonApiRemoval(id = "gregtech.api.addon.machine.FuelGenerator.Builder#io", removeAt = "0.4")
-        public Builder io(MachineIo value) {
-            if (value != null) throw new IllegalArgumentException("Fuel generators cannot declare item and fluid faces");
-            return this;
-        }
         public Builder fuelMap(String value) { fuelMap = value; return this; }
         public Builder efficiency(int value) { efficiency = value; return this; }
         public Builder tank(int millibuckets) { tankCapacity = millibuckets; return this; }

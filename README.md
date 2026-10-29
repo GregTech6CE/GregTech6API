@@ -23,9 +23,9 @@ GT6CE 的独立公共 API 仓库，提供纯 Java 契约与按 Minecraft/加载�
 
 | 坐标 | 产物目录 |
 | --- | --- |
-| `gregtech:gt6ce-api:0.2.0` | `common/build/libs/` |
-| `gregtech:gt6ce-addon-sdk-1.20.1-forge:0.2.0` | `minecraft/versions/1.20.1-forge/build/libs/` |
-| `gregtech:gt6ce-addon-sdk-1.21.1-neoforge:0.2.0` | `minecraft/versions/1.21.1-neoforge/build/libs/` |
+| `gregtech:gt6ce-api:0.3.0` | `common/build/libs/` |
+| `gregtech:gt6ce-addon-sdk-1.20.1-forge:0.3.0` | `minecraft/versions/1.20.1-forge/build/libs/` |
+| `gregtech:gt6ce-addon-sdk-1.21.1-neoforge:0.3.0` | `minecraft/versions/1.21.1-neoforge/build/libs/` |
 
 每项包含 binary、sources 和 javadoc JAR。游戏 SDK 使用开发环境的 Mojang 名称，仅声明公共库为传递依赖；消费者还需对应 Minecraft/加载器开发环境。这些坐标是发布配置，不表示已上传公共 Maven 服务。公共库的 publication 为 `api`，平台为 `addonApi`，发布仓库需另行配置。
 
@@ -43,9 +43,19 @@ API 版本独立于主模组版本，以 `common/build.gradle` 为准，`GregTec
 - `BasicMachineParameters.energyTag()` 移除，改用 `energyType()`；Tag 转换留在宿主。
 - `MachineControllerKind.builtIn(String)` 移出 API，附属应显式选择枚举值。
 - 基础机器仍只接受已知能源，使用 `EnergyType.requireKnown`；原本支持自定义类型与 `*` 的行为声明保持不变。TU/HU 与显式/未声明能源范围保持原规则。
-- `AddonLimits` 的 `MAX_PER_TICK`、`MAX_CAPACITY`、`MAX_EFFICIENCY`、`DEFAULT_EFFICIENCY` 不再是编译期常量：数值不变，但不能再用于 `switch` 的 case 标签、注解参数或其他常量表达式。重新编译后会在运行时读取宿主提供的当前值。
 
 这些入口的旧二进制需要迁移后重新编译。包名、注册 ID、SPI 服务路径和配方单位不因拆仓改变。可变模型和内部辅助类不自动承诺长期兼容。
+
+## 0.3 迁移与兼容
+
+API 版本仍以 `common/build.gradle` 为准。0.3 包含公开签名删除，宿主与附属需要重新编译。
+
+- 机器模板 Builder 中只用于拒绝不支持配置的方法已移除：`FuelGenerator.Builder.energy`、`energyOutput`、`io`，`RecipeMachine.Builder.energyOutput`、`output(FuelOutput)`，以及 `BehaviorMachine.Builder.output(FuelOutput)`。这些方法原本只会抛异常。
+- `AddonLimits` 的 `MAX_PER_TICK`、`MAX_CAPACITY`、`MAX_EFFICIENCY`、`DEFAULT_EFFICIENCY` 不再是编译期常量：数值不变，但不能再用于 `switch` 的 case 标签、注解参数或其他常量表达式。重新编译后会在运行时读取宿主提供的当前值。
+- `MachineBehaviorContext` 新增自解释方法，旧重载与别名已废弃，计划 0.5 删除：`emit(long, long)` → `emitPacketsFromFaces`，`emit(String, long, long)`/`emitToPart` → `moveUnitsToPart`，`capacity()` → `energyCapacity`，`capacity(int)` → `tankCapacity`，`energy()` → `mainInputStored`，`energy(String)`/`auxiliaryEnergy` → `auxiliaryStored`，`progress(float)` → `setProgress`，`item(int)` → `inventoryAccess().snapshot(int)`。
+- `EnergyInput.collapseDefaultCapacity()` 是宿主内部步骤，已废弃，计划 0.5 删除。
+
+0.5 删除废弃项之前，需要确认宿主与已知附属已经迁移并重新编译。
 
 ## 来源与许可
 

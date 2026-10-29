@@ -25,7 +25,7 @@ public final class GregTechAddons {
     public static final int API_VERSION = apiVersion();
 
     /** Current {@link #API_VERSION}. */
-    public static int apiVersion() { return 2; }
+    public static int apiVersion() { return 3; }
 
     private static final TreeMap<String, GregTechAddon> ADDONS = new TreeMap<>();
     public enum Phase { COLLECTING, DISPATCHING, READY, FAILED }

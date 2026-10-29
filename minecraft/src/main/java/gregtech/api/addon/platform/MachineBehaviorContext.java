@@ -42,10 +42,10 @@ public interface MachineBehaviorContext {
      * Prefer {@link #inventoryAccess()} for snapshot reads and explicit inventory operations.
      *
      * @deprecated Use {@link InventoryAccess#snapshot(int)} from {@link #inventoryAccess()};
-     *             it returns a detached stack. Removal is 0.4.
+     *             it returns a detached stack. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#item", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#item", removeAt = "0.5")
     ItemStack item(int slot);
 
     void setItem(int slot, ItemStack stack);
@@ -60,10 +60,10 @@ public interface MachineBehaviorContext {
     /**
      * Capacity of tank {@code tank} in millibuckets.
      *
-     * @deprecated Use {@link #tankCapacity(int)}. Removal is 0.4.
+     * @deprecated Use {@link #tankCapacity(int)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#capacity", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#capacity", removeAt = "0.5")
     int capacity(int tank);
 
     /** Capacity of tank {@code tank} in millibuckets. */
@@ -87,10 +87,10 @@ public interface MachineBehaviorContext {
      * {@link #emitPacketsFromFaces(long, long)} still move energy. The auxiliary buffer is
      * {@link #auxiliaryStored(String)}.
      *
-     * @deprecated Use {@link #mainInputStored()}. Removal is 0.4.
+     * @deprecated Use {@link #mainInputStored()}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#energy", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#energy", removeAt = "0.5")
     long energy();
 
     /** Energy stored in the main input, in the machine's energy unit; same as {@link #energy()}. */
@@ -110,10 +110,10 @@ public interface MachineBehaviorContext {
     /**
      * Stored-energy cap. Zero means the machine still drains its rated input each tick.
      *
-     * @deprecated Use {@link #energyCapacity()}. Removal is 0.4.
+     * @deprecated Use {@link #energyCapacity()}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#capacity", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#capacity", removeAt = "0.5")
     long capacity();
 
     /** Stored-energy cap. Zero means the machine still drains its rated input each tick. */
@@ -129,10 +129,10 @@ public interface MachineBehaviorContext {
      * A request above the declared maximum throws. Prefer {@link #energyAccess()} for a typed result.
      * A named bound part is {@link #moveUnitsToPart(String, long, long)}.
      *
-     * @deprecated Use {@link #emitPacketsFromFaces(long, long)}. Removal is 0.4.
+     * @deprecated Use {@link #emitPacketsFromFaces(long, long)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emit", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emit", removeAt = "0.5")
     long emit(long size, long amount);
 
     /**
@@ -172,10 +172,10 @@ public interface MachineBehaviorContext {
      * but a machine whose stored energy has a declared type only feeds a matching part.
      * A request the part's output declaration rejects throws.
      *
-     * @deprecated Use {@link #moveUnitsToPart(String, long, long)}. Removal is 0.4.
+     * @deprecated Use {@link #moveUnitsToPart(String, long, long)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emit", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emit", removeAt = "0.5")
     long emit(String part, long size, long amount);
 
     /**
@@ -187,10 +187,10 @@ public interface MachineBehaviorContext {
     /**
      * Same as {@link #moveUnitsToPart(String, long, long)}.
      *
-     * @deprecated Use {@link #moveUnitsToPart(String, long, long)}. Removal is 0.4.
+     * @deprecated Use {@link #moveUnitsToPart(String, long, long)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emitToPart", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#emitToPart", removeAt = "0.5")
     default long emitToPart(String part, long size, long amount) { return emit(part, size, amount); }
 
     boolean toggle(int index);
@@ -202,10 +202,10 @@ public interface MachineBehaviorContext {
     /**
      * Sets the progress arrow fraction from 0 to 1.
      *
-     * @deprecated Use {@link #setProgress(float)}. Removal is 0.4.
+     * @deprecated Use {@link #setProgress(float)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#progress", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#progress", removeAt = "0.5")
     void progress(float fraction);
 
     /** Fraction from 0 to 1 shown on the progress arrow. */
@@ -246,10 +246,10 @@ public interface MachineBehaviorContext {
      * Auxiliary buffer for {@code type}, in that energy's unit.
      * This is not {@link #mainInputStored()}. An unknown type, or a machine with no auxiliary input, is 0.
      *
-     * @deprecated Use {@link #auxiliaryStored(String)}. Removal is 0.4.
+     * @deprecated Use {@link #auxiliaryStored(String)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#energy", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#energy", removeAt = "0.5")
     long energy(String type);
 
     /** Auxiliary buffer for {@code type}, in that energy's unit; same as {@link #energy(String)}. */
@@ -258,10 +258,10 @@ public interface MachineBehaviorContext {
     /**
      * Same as {@link #auxiliaryStored(String)}.
      *
-     * @deprecated Use {@link #auxiliaryStored(String)}. Removal is 0.4.
+     * @deprecated Use {@link #auxiliaryStored(String)}. Removal is 0.5.
      */
-    @Deprecated(since = "0.2", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#auxiliaryEnergy", removeAt = "0.4")
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.addon.platform.MachineBehaviorContext#auxiliaryEnergy", removeAt = "0.5")
     default long auxiliaryEnergy(String type) { return energy(type); }
 
     /**
