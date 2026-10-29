@@ -240,6 +240,11 @@ public final class BehaviorMachine implements AddonMachine {
         }
 
         public Builder energyOutput(EnergyOutput value) { output = value; return this; }
+        /**
+         * @deprecated Behavior machines cannot declare fuel output; removal is 0.4.
+         */
+        @Deprecated(since = "0.2", forRemoval = true)
+        @AddonApiRemoval(id = "gregtech.api.addon.machine.BehaviorMachine.Builder#output", removeAt = "0.4")
         public Builder output(FuelOutput value) {
             if (value != null) throw new IllegalArgumentException("Behavior machines cannot declare fuel output");
             return this;

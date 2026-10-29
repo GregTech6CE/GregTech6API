@@ -152,10 +152,21 @@ public final class RecipeMachine implements AddonMachine {
         /** Charge each recipe's {@code special} from the auxiliary buffer before progress starts. */
         public Builder startupEnergy(boolean value) { startupEnergy = value; return this; }
 
+        /**
+         * @deprecated Recipe machines cannot declare energy output; removal is 0.4.
+         */
+        @Deprecated(since = "0.2", forRemoval = true)
+        @AddonApiRemoval(id = "gregtech.api.addon.recipe.RecipeMachine.Builder#energyOutput", removeAt = "0.4")
         public Builder energyOutput(EnergyOutput value) {
             if (value != null) throw new IllegalArgumentException("Recipe machines cannot declare energy output");
             return this;
         }
+
+        /**
+         * @deprecated Recipe machines cannot declare fuel output; removal is 0.4.
+         */
+        @Deprecated(since = "0.2", forRemoval = true)
+        @AddonApiRemoval(id = "gregtech.api.addon.recipe.RecipeMachine.Builder#output", removeAt = "0.4")
         public Builder output(FuelOutput value) {
             if (value != null) throw new IllegalArgumentException("Recipe machines cannot declare fuel output");
             return this;
