@@ -2,7 +2,8 @@ package gregtech.api.material;
 
 
 /**
- * One component in a composite {@link GTMaterial} (GT6 {@code OreDictMaterialStack}).
+ * One material and its GT amount, used by composite {@link GTMaterial} compositions
+ * (GT6 {@code OreDictMaterialStack}) and by weighted construction-material lists.
  * A null material is stored as {@link MaterialSentinels#Invalid}, which
  * {@link GTMaterial#setComposition(long, MaterialComponent...)} then drops.
  */

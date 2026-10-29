@@ -4,10 +4,23 @@ package gregtech.api.machine;
 
 /**
  * Per-machine-type face configuration for item, fluid, and energy I/O.
- * Bitmask bits use the Minecraft DOWN..EAST side index (0=DOWN .. 5=EAST)
- * and represent <b>machine-relative</b> directions.
- * <p>
- * Auto I/O directions use {@code -1} for none / undefined (GT6 {@code SIDE_UNDEFINED}).
+ *
+ * <p>Mask bits reuse the numeric order of Minecraft {@code Direction} values
+ * ({@code DOWN}=0, {@code UP}=1, {@code NORTH}=2, {@code SOUTH}=3, {@code WEST}=4,
+ * {@code EAST}=5) so a mask converts without a lookup table. A set bit still means a
+ * <b>machine-relative</b> face, not the absolute direction with that number:</p>
+ * <ul>
+ *   <li>0: bottom (absolute)</li>
+ *   <li>1: top (absolute)</li>
+ *   <li>2: right</li>
+ *   <li>3: front</li>
+ *   <li>4: left</li>
+ *   <li>5: back</li>
+ * </ul>
+ *
+ * <p>{@link MachineFace} exposes the same indices through {@link MachineFace#index()}.</p>
+ *
+ * <p>Auto I/O directions use {@code -1} for none / undefined (GT6 {@code SIDE_UNDEFINED}).</p>
  */
 public record MachineFaceMasks(
         int itemInputs, int itemOutputs,
@@ -16,16 +29,16 @@ public record MachineFaceMasks(
         int itemAutoInput, int itemAutoOutput,
         int fluidAutoInput, int fluidAutoOutput
 ) {
-    // ── Machine-relative direction constants ─────────────────────────────
-    // Values match Direction.get3DDataValue() for easy conversion.
-    // TOP/BOTTOM are absolute; LEFT/RIGHT/FRONT/BACK are relative to machine facing.
+    // ── Machine-relative face indices ────────────────────────────────────
+    // The numbers match Direction.get3DDataValue() for easy conversion, but each
+    // constant names a face of the machine, not the absolute direction at that index.
 
-    public static final int BOTTOM = 0;  // Direction.DOWN
-    public static final int TOP    = 1;  // Direction.UP
-    public static final int LEFT   = 4;  // Direction.WEST   (machine left)
-    public static final int RIGHT  = 2;  // Direction.NORTH  (machine right)
-    public static final int FRONT  = 3;  // Direction.SOUTH  (machine front)
-    public static final int BACK   = 5;  // Direction.EAST   (machine back)
+    public static final int BOTTOM = 0;
+    public static final int TOP    = 1;
+    public static final int LEFT   = 4;
+    public static final int RIGHT  = 2;
+    public static final int FRONT  = 3;
+    public static final int BACK   = 5;
 
     /** All six faces enabled for every I/O type. */
     public static final MachineFaceMasks ALL_SIDES = new MachineFaceMasks(
@@ -60,11 +73,9 @@ public record MachineFaceMasks(
 
     // ── Bitmask helpers ──────────────────────────────────────────────────
 
-    /** Check whether direction {@code d} is enabled in the given mask. */
-
-    /** Check whether direction {@code d} is enabled in the given mask (int index). */
-    public static boolean has(int mask, int dir3DData) {
-        return (mask & (1 << dir3DData)) != 0;
+    /** Returns whether the machine-relative face index {@code face} (0..5) is set in {@code mask}. */
+    public static boolean has(int mask, int face) {
+        return (mask & (1 << face)) != 0;
     }
 
     // ── Auto I/O direction helpers ──────────────────────────────────────
@@ -83,10 +94,6 @@ public record MachineFaceMasks(
     public static class Builder {
         private int itemIn, itemOut, fluidIn, fluidOut, energyIn, energyOut;
         private int itemAutoIn = -1, itemAutoOut = -1, fluidAutoIn = -1, fluidAutoOut = -1;
-
-        // ── Direction-enum overloads (delegate to int overloads) ─────
-
-
 
         // ── Machine-relative int overloads (primary API) ──────────────
 

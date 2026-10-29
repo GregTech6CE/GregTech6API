@@ -4,14 +4,8 @@ import java.util.*;
 
 /** Loader-free source coordinates and roles. Minecraft world/registry access is a boundary. */
 public final class StructureGrid {
-    public enum Role {
-        AIR, CASING, LOGISTICS, HEAT_INPUT, CRUCIBLE, FLUID_INPUT, FLUID_OUTPUT,
-        FLUID_IO, ITEM_IO, ITEM_FLUID_IO, ITEM_FLUID_INPUT, ITEM_FLUID_OUTPUT,
-        ENERGY_INPUT, ITEM_FLUID_ENERGY_INPUT, ITEM_FLUID_ENERGY, ENERGY_OUTPUT
-    }
-
     public record Position(int x, int y, int z) {}
-    public record Cell(int right, int up, int back, Role role) {}
+    public record Cell(int right, int up, int back, StructureRole role) {}
 
     private final List<Cell> cells;
 
@@ -37,15 +31,16 @@ public final class StructureGrid {
         return frontY > 0 ? back == 3 : frontY < 0 ? back == 0 : up == -1;
     }
 
-    public static Role fluidRole(int frontY, int up, int back) {
+    public static StructureRole fluidRole(int frontY, int up, int back) {
         return back == 0
-                ? (lowest(frontY, up, back) ? Role.FLUID_IO : Role.FLUID_INPUT)
-                : (lowest(frontY, up, back) ? Role.FLUID_OUTPUT : Role.CASING);
+                ? (lowest(frontY, up, back) ? StructureRole.FLUID_IO : StructureRole.FLUID_INPUT)
+                : (lowest(frontY, up, back) ? StructureRole.FLUID_OUTPUT : StructureRole.CASING);
     }
 
-    public static Role axialRole(int frontY, int right, int up, int back, boolean fluids) {
+    public static StructureRole axialRole(int frontY, int right, int up, int back, boolean fluids) {
         return right == 0 && up == 0 && back == 3
-                ? Role.ENERGY_OUTPUT : fluids ? fluidRole(frontY, up, back) : Role.CASING;
+                ? StructureRole.ENERGY_OUTPUT
+                : fluids ? fluidRole(frontY, up, back) : StructureRole.CASING;
     }
 
     public static boolean canAutoOutput(int faceY, boolean gas, int density) {

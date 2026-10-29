@@ -132,14 +132,12 @@ public final class LayoutRepeat {
                 throw new IllegalArgumentException("Structure repeat '" + key + "' max is too large: " + max);
             if (cells.isEmpty())
                 throw new IllegalArgumentException("Structure repeat '" + key + "' is empty");
-            var seen = new HashSet<Position>();
+            var seen = new HashSet<LayoutPosition>();
             for (LayoutCell cell : cells) {
-                if (!seen.add(new Position(cell.right(), cell.up(), cell.back())))
+                if (!seen.add(new LayoutPosition(cell.right(), cell.up(), cell.back())))
                     throw new IllegalArgumentException("Duplicate cell in structure repeat '" + key + "'");
             }
             return new LayoutRepeat(key, up, min, max, step, List.copyOf(cells));
         }
     }
-
-    private record Position(int right, int up, int back) {}
 }

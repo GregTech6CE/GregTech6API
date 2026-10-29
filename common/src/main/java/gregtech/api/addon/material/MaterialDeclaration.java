@@ -74,17 +74,6 @@ public record MaterialDeclaration(
     /** Declares a material by name. GregTech assigns the numeric id at startup. */
     public static Builder builder(String name) { return new Builder(0, name); }
 
-    /**
-     * @deprecated Use {@link #builder(String)}. The numeric id is ignored; the 1..9999 check remains only so
-     *             legacy declarations keep rejecting invalid ids. Removal is 0.9.
-     */
-    @Deprecated(since = "0.0", forRemoval = true)
-    @AddonApiRemoval(id = "gregtech.api.addon.material.MaterialDeclaration#builder", removeAt = "0.9")
-    public static Builder builder(int id, String name) {
-        if (id <= 0 || id >= 10_000) throw new IllegalArgumentException("Material ID must be 1..9999: " + id);
-        return new Builder(0, name);
-    }
-
     public static final class Builder {
         private final int id;
         private final String name;

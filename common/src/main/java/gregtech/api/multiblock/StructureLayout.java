@@ -7,15 +7,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * A multiblock layout bound by name. The name equals the controller {@code machineType}.
  * Layouts are not inlined into a machine declaration.
  */
 public final class StructureLayout {
-    private static final Pattern LAYOUT_NAME = Pattern.compile("[a-z0-9_]+");
-
     private final String name;
     private final List<LayoutCell> cells;
     private final List<LayoutRepeat> repeats;
@@ -78,13 +75,13 @@ public final class StructureLayout {
         }
 
         public StructureLayout build() {
-            if (!AddonNames.matches(LAYOUT_NAME, name))
+            if (!AddonNames.matches(AddonNames.MACHINE_TYPE, name))
                 throw new IllegalArgumentException("Invalid layout name: " + name);
             if (cells.isEmpty() && repeats.isEmpty())
                 throw new IllegalArgumentException("Layout '" + name + "' is empty");
-            var seen = new HashSet<Position>();
+            var seen = new HashSet<LayoutPosition>();
             for (LayoutCell cell : cells) {
-                if (!seen.add(new Position(cell.right(), cell.up(), cell.back())))
+                if (!seen.add(new LayoutPosition(cell.right(), cell.up(), cell.back())))
                     throw new IllegalArgumentException("Duplicate structure cell at "
                             + cell.right() + "/" + cell.up() + "/" + cell.back());
             }
@@ -102,7 +99,7 @@ public final class StructureLayout {
                         if (cell.right() == 0 && absoluteUp == 0 && cell.back() == 0)
                             throw new IllegalArgumentException("Structure repeat '" + repeat.key()
                                     + "' copy " + copy + " cell cannot be the origin");
-                        if (!seen.add(new Position(cell.right(), absoluteUp, cell.back())))
+                        if (!seen.add(new LayoutPosition(cell.right(), absoluteUp, cell.back())))
                             throw new IllegalArgumentException("Structure repeat '" + repeat.key()
                                     + "' copy " + copy + " overlaps another cell");
                     }
@@ -115,13 +112,10 @@ public final class StructureLayout {
     /** Absolute layer of {@code cell} in {@code copy}, rejecting a coordinate that does not fit in an int. */
     private static int absoluteLayer(LayoutRepeat repeat, LayoutCell cell, int copy) {
         try {
-            int along = Math.addExact(cell.up(), Math.multiplyExact(copy, repeat.height()));
-            return Math.addExact(repeat.up(), Math.multiplyExact(repeat.step(), along));
+            return repeat.absoluteUp(cell, copy);
         } catch (ArithmeticException overflow) {
             throw new IllegalArgumentException("Structure repeat '" + repeat.key()
                     + "' copy " + copy + " is outside the coordinate range", overflow);
         }
     }
-
-    private record Position(int right, int up, int back) {}
 }

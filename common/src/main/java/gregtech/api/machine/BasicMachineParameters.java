@@ -1,9 +1,10 @@
 package gregtech.api.machine;
 
+import gregtech.api.addon.AddonApiRemoval;
 import gregtech.api.machine.IoTarget;
 import gregtech.api.machine.MachineFaceMasks;
 import gregtech.api.material.GTMaterial;
-import gregtech.api.material.WeightedMaterial;
+import gregtech.api.material.MaterialComponent;
 import gregtech.api.energy.EnergyType;
 
 
@@ -26,7 +27,7 @@ public record BasicMachineParameters(
         float hardness,
         float blastResistance,
         MachineFaceMasks faceConfig,
-        List<WeightedMaterial> constructionMaterials,
+        List<MaterialComponent> constructionMaterials,
         int parallelLimit,
         /** Minimum energy per tick accepted, from GT6 {@code NBT_INPUT_MIN}. */
         long energyInMin,
@@ -77,7 +78,7 @@ public record BasicMachineParameters(
     /** Built-in and older callers keep cheap overclocking on the name table and do not require light. */
     public BasicMachineParameters(String id, GTMaterial material, String machineName, String energyType,
                                   int tier, long energyIn, long energyOut, float hardness, float blastResistance,
-                                  MachineFaceMasks faceConfig, List<WeightedMaterial> constructionMaterials,
+                                  MachineFaceMasks faceConfig, List<MaterialComponent> constructionMaterials,
                                   int parallelLimit, long energyInMin, long energyInMax) {
         this(id, material, machineName, energyType, tier, energyIn, energyOut, hardness, blastResistance,
                 faceConfig, constructionMaterials, parallelLimit, energyInMin, energyInMax, false, false, 0, false, false,
@@ -98,6 +99,12 @@ public record BasicMachineParameters(
         return EnergyType.time(EnergyType.requireKnown(energyType)) ? 16 : energyIn * 2;
     }
 
+    /**
+     * @deprecated Host machine content; the host keeps this table with its own machine definitions.
+     * Replacement is the host-side copy. Removal is 0.5.
+     */
+    @Deprecated(since = "0.3", forRemoval = true)
+    @AddonApiRemoval(id = "gregtech.api.machine.BasicMachineParameters#legacyParallelLimit", removeAt = "0.5")
     public static int legacyParallelLimit(String machineName) {
         return switch (machineName) {
             case "largemixer", "largefermenter" -> 256;
@@ -108,20 +115,32 @@ public record BasicMachineParameters(
         };
     }
 
+    /** Fixed packet range of a large recipe machine unless the energy is time-based. */
+    private static final long LARGE_RECIPE_MIN_INPUT = 512;
+    private static final long LARGE_RECIPE_MAX_INPUT = 4096;
+    /** TU uses packets of 1..16 units. HU shares the 1-unit minimum but not the 16-unit maximum. */
+    private static final long LARGE_RECIPE_TIME_MIN_INPUT = 1;
+    private static final long LARGE_RECIPE_TIME_MAX_INPUT = 16;
+
     /**
      * The range a controller actually accepts. An explicit declaration wins. Otherwise a single
      * block uses half to double; a large recipe machine uses its fixed packet range.
      */
     public long acceptedEnergyInMin(boolean largeRecipe) {
         if (energyRangeSpecified) return energyInMin;
-        if (largeRecipe) return EnergyType.time(energyType) || EnergyType.same(energyType, EnergyType.HU) ? 1 : 512;
+        if (largeRecipe) return EnergyType.time(energyType) || EnergyType.same(energyType, EnergyType.HU)
+                ? LARGE_RECIPE_TIME_MIN_INPUT : LARGE_RECIPE_MIN_INPUT;
         return energyInMin > 0 ? energyInMin : defaultEnergyInMin(energyType, energyIn);
     }
 
-    /** @see #acceptedEnergyInMin(boolean) */
+    /**
+     * @see #acceptedEnergyInMin(boolean)
+     * HU uses the time minimum but the general maximum, matching the current host contract.
+     */
     public long acceptedEnergyInMax(boolean largeRecipe) {
         if (energyRangeSpecified) return energyInMax;
-        if (largeRecipe) return EnergyType.time(energyType) ? 16 : 4096;
+        if (largeRecipe) return EnergyType.time(energyType)
+                ? LARGE_RECIPE_TIME_MAX_INPUT : LARGE_RECIPE_MAX_INPUT;
         return energyInMax > 0 ? energyInMax : defaultEnergyInMax(energyType, energyIn);
     }
 
@@ -139,7 +158,7 @@ public record BasicMachineParameters(
         private float hardness = 5;
         private float resistance = 5;
         private MachineFaceMasks faces = MachineFaceMasks.ALL_SIDES;
-        private List<WeightedMaterial> construction;
+        private List<MaterialComponent> construction;
         private long energyInMin;
         private long energyInMax;
         private boolean cheapOverclocking;
@@ -171,7 +190,7 @@ public record BasicMachineParameters(
         public Builder parallel(int value) { parallel = value; return this; }
         public Builder strength(float hardness, float resistance) { this.hardness = hardness; this.resistance = resistance; return this; }
         public Builder faces(MachineFaceMasks value) { faces = value; return this; }
-        public Builder constructionMaterials(List<WeightedMaterial> value) { construction = List.copyOf(value); return this; }
+        public Builder constructionMaterials(List<MaterialComponent> value) { construction = List.copyOf(value); return this; }
         public Builder cheapOverclocking(boolean value) { cheapOverclocking = value; cheapOverclockingSpecified = true; return this; }
         public Builder minimumLightAbove(int value) { minimumLightAbove = value; return this; }
         public Builder searchOutputTanks(boolean value) { searchOutputTanks = value; return this; }

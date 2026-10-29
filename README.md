@@ -56,14 +56,18 @@ API 版本仍以 `common/build.gradle` 为准。0.3 包含公开签名删除，�
 - `EnergyInput.collapseDefaultCapacity()` 已移除；`withFaces` 现在把零容量存为未指定，构建后的行为机语义不变。
 - `ModData.bindPresence` 只能绑定一次，重复调用会抛 `IllegalStateException`；服务重复绑定的异常会写明首个绑定者的类与位置，并以 cause 附带其调用栈。
 - 公共 API 使用 JSpecify（`org.jspecify:jspecify`）标注可空性：包级 `@NullMarked`，可空返回值与参数用 `@Nullable`。该依赖仅编译期使用，不进入运行时 classpath。
-- `MaterialDefinition` 已废弃（0.10 删除，与 `GregTechMaterialContributor` 同步）；材料声明使用 `MaterialDeclaration`，读取使用 `GregTechMaterials.Material`。`GTMaterial` 与 `BasicMachineParameters` 在文档中标注为宿主内部模型。
+- `MaterialDefinition`、`GregTechMaterialContributor`、`GregTechMachineContributor`、`AddonMachineDefinition`、`AddonMachineLayout` 与 `MaterialDeclaration.builder(int, String)` 已删除。材料声明使用 `MaterialDeclaration`（按名声明，id 由宿主分配），读取使用 `GregTechMaterials.Material`；机器声明使用 `AddonMachineContributor` 与 `RecipeMachine`。`GTMaterial` 与 `BasicMachineParameters` 在文档中标注为宿主内部模型。
+- `WeightedMaterial` 已删除；`BasicMachineParameters` 的构造器、`constructionMaterials(...)` 与记录组件改用结构相同的 `MaterialComponent`。
+- `BasicMachineParameters.legacyParallelLimit(String)` 已废弃，计划 0.5 删除：该表属于宿主的机器内容，宿主应使用自己的副本，附属不应依赖它。
 - `GTVoltageTiers.VOLTAGES`/`NAMES` 和 `MaterialTextureSet.MODELED` 已移除，改用 `tierCount()`、`tierVoltage(int)`、`tierName(int)` 与 `modeled()`。
 - `MachineControl` 移至 `gregtech.api.platform.machine`，旧位置 `gregtech.api.machine.MachineControl` 已移除；宿主和附属改用新包的 `MachineControl` 与 `MachineControl.Provider`。
 - `AddonRecipes.Map` 改名为 `AddonRecipes.RecipeMap`，避免与 `java.util.Map` 混淆；`AddonLoader.Services.map` 的返回类型同步变更。
 - `MachineBehavior` 新增 `crucibleContent(context)`，返回 `CrucibleContent`；旧的 `getCrucibleMaterial`/`getCrucibleTemperature`/`getCrucibleContentAmount` 已废弃，计划 0.5 删除。
 - `RecipeMachine` 的上限与 `BehaviorMachine` 对齐：`tier` 不超过 255，主输入 `perTick` 必须在 1..`AddonLimits.MAX_PER_TICK`，并且落在声明的包范围（range）内。原本靠 0 或超大值通过的声明现在会报错。id 不是合法 machine type 时，报错会提示显式调用 `machineType(...)`。
+- `RecipeMapSpec` 新增不带首个参数的构造器；旧构造器的 `aRecipeList` 本来就被忽略，现已废弃，计划 0.5 删除。该类型计划移回宿主，附属的配方表请使用 `RecipeTable`。
+- `StructureGrid.Role` 已删除，统一使用 `StructureRole`；`StructureGrid.Cell`、`fluidRole`、`axialRole` 的类型同步改为 `StructureRole`。
 
-按 `@AddonApiRemoval` 排期的其余废弃项（0.9、0.10）删除之前，需要确认宿主与已知附属已经迁移并重新编译。
+按 `@AddonApiRemoval` 排期的其余废弃项（0.5）删除之前，需要确认宿主与已知附属已经迁移并重新编译。
 
 ## 来源与许可
 
